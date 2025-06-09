@@ -1,0 +1,81 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Fondo -->
+  <rect width="1280" height="720" fill="#0f172a"/>
+  
+  <!-- Título -->
+  <text x="640" y="100" font-family="Arial, sans-serif" font-size="48" font-weight="bold" 
+        fill="url(#titleGradient)" text-anchor="middle">⚡ Comparador de Pokémon GO ⚡</text>
+  
+  <!-- Subtítulo -->
+  <text x="640" y="150" font-family="Arial, sans-serif" font-size="24" 
+        fill="#cbd5e1" text-anchor="middle">🎯 Analiza y compara el DPS de tus Pokémon favoritos</text>
+  
+  <!-- Sección de formulario simulada -->
+  <rect x="50" y="200" width="380" height="450" rx="16" fill="rgba(30, 41, 59, 0.8)" stroke="rgba(59, 130, 246, 0.1)"/>
+  <text x="240" y="230" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#f8fafc" text-anchor="middle">Agregar Pokémon</text>
+  
+  <!-- Campos del formulario -->
+  <rect x="80" y="260" width="320" height="40" rx="8" fill="rgba(15, 23, 42, 0.9)" stroke="rgba(59, 130, 246, 0.2)"/>
+  <text x="90" y="280" font-family="Arial, sans-serif" font-size="14" fill="#cbd5e1">Buscar Pokémon...</text>
+  
+  <rect x="80" y="320" width="150" height="40" rx="8" fill="rgba(15, 23, 42, 0.9)" stroke="rgba(59, 130, 246, 0.2)"/>
+  <text x="90" y="340" font-family="Arial, sans-serif" font-size="14" fill="#cbd5e1">Mov. Rápido</text>
+  
+  <rect x="250" y="320" width="150" height="40" rx="8" fill="rgba(15, 23, 42, 0.9)" stroke="rgba(59, 130, 246, 0.2)"/>
+  <text x="260" y="340" font-family="Arial, sans-serif" font-size="14" fill="#cbd5e1">Mov. Cargado</text>
+  
+  <!-- Botón -->
+  <rect x="80" y="380" width="320" height="45" rx="12" fill="#3b82f6"/>
+  <text x="240" y="405" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="white" text-anchor="middle">Agregar a Comparación</text>
+  
+  <!-- Tabla de comparación simulada -->
+  <rect x="480" y="200" width="750" height="450" rx="16" fill="rgba(30, 41, 59, 0.8)" stroke="rgba(59, 130, 246, 0.1)"/>
+  <text x="855" y="230" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#f8fafc" text-anchor="middle">Comparación de DPS</text>
+  
+  <!-- Encabezados de tabla -->
+  <rect x="500" y="250" width="710" height="35" fill="rgba(59, 130, 246, 0.1)"/>
+  <text x="520" y="270" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#f8fafc">Pokémon</text>
+  <text x="650" y="270" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#f8fafc">Tipo</text>
+  <text x="750" y="270" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#f8fafc">Ataques</text>
+  <text x="950" y="270" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#f8fafc">DPS</text>
+  <text x="1100" y="270" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#f8fafc">CP</text>
+  
+  <!-- Filas de ejemplo -->
+  <rect x="500" y="290" width="710" height="40" fill="rgba(15, 23, 42, 0.5)"/>
+  <circle cx="540" cy="310" r="15" fill="#ef4444"/>
+  <text x="520" y="315" font-family="Arial, sans-serif" font-size="12" fill="white" text-anchor="middle">🔥</text>
+  <text x="570" y="315" font-family="Arial, sans-serif" font-size="14" fill="#f8fafc">Charizard</text>
+  <rect x="650" y="300" width="60" height="20" rx="10" fill="#ef4444"/>
+  <text x="680" y="313" font-family="Arial, sans-serif" font-size="11" fill="white" text-anchor="middle">Fuego</text>
+  <text x="750" y="315" font-family="Arial, sans-serif" font-size="12" fill="#cbd5e1">Fire Spin / Blast Burn</text>
+  <text x="950" y="315" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#10b981">24.8</text>
+  <text x="1100" y="315" font-family="Arial, sans-serif" font-size="14" fill="#cbd5e1">3334</text>
+  
+  <rect x="500" y="335" width="710" height="40" fill="rgba(30, 41, 59, 0.3)"/>
+  <circle cx="540" cy="355" r="15" fill="#3b82f6"/>
+  <text x="520" y="360" font-family="Arial, sans-serif" font-size="12" fill="white" text-anchor="middle">💧</text>
+  <text x="570" y="360" font-family="Arial, sans-serif" font-size="14" fill="#f8fafc">Gyarados</text>
+  <rect x="650" y="345" width="60" height="20" rx="10" fill="#3b82f6"/>
+  <text x="680" y="358" font-family="Arial, sans-serif" font-size="11" fill="white" text-anchor="middle">Agua</text>
+  <text x="750" y="360" font-family="Arial, sans-serif" font-size="12" fill="#cbd5e1">Waterfall / Hydro Pump</text>
+  <text x="950" y="360" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#10b981">22.1</text>
+  <text x="1100" y="360" font-family="Arial, sans-serif" font-size="14" fill="#cbd5e1">3391</text>
+  
+  <!-- Gráfico simulado -->
+  <rect x="500" y="400" width="710" height="200" fill="rgba(15, 23, 42, 0.3)" rx="8"/>
+  <text x="855" y="425" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#f8fafc" text-anchor="middle">Gráfico de DPS</text>
+  
+  <!-- Barras del gráfico -->
+  <rect x="600" y="450" width="150" height="8" fill="#ef4444"/>
+  <rect x="600" y="470" width="135" height="8" fill="#3b82f6"/>
+  <text x="580" y="458" font-family="Arial, sans-serif" font-size="12" fill="#f8fafc">Charizard</text>
+  <text x="580" y="478" font-family="Arial, sans-serif" font-size="12" fill="#f8fafc">Gyarados</text>
+  
+  <defs>
+    <linearGradient id="titleGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#10b981;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+</svg>

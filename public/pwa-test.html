@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test PWA - Comparador Pokémon GO</title>
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#3b82f6">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #0f172a;
+            color: white;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .status {
+            background: rgba(30, 41, 59, 0.8);
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+        .success { border-color: #10b981; }
+        .error { border-color: #ef4444; }
+        .warning { border-color: #f59e0b; }
+        button {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 5px;
+            font-weight: 600;
+        }
+        button:hover {
+            background: #1d4ed8;
+        }
+        .cache-info {
+            background: rgba(15, 23, 42, 0.9);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Test PWA - Comparador Pokémon GO</h1>
+        
+        <div class="status" id="sw-status">
+            <h3>📦 Service Worker Status</h3>
+            <p id="sw-info">Verificando...</p>
+        </div>
+        
+        <div class="status" id="manifest-status">
+            <h3>📱 Manifest Status</h3>
+            <p id="manifest-info">Verificando...</p>
+        </div>
+        
+        <div class="status" id="install-status">
+            <h3>⚡ Instalación PWA</h3>
+            <p id="install-info">Verificando...</p>
+            <button id="install-btn" onclick="installPWA()" style="display: none;">
+                Instalar Aplicación
+            </button>
+        </div>
+        
+        <div class="status" id="cache-status">
+            <h3>💾 Cache Status</h3>
+            <p id="cache-info">Verificando...</p>
+            <button onclick="testCache()">Test Cache</button>
+            <button onclick="clearAllCaches()">Limpiar Cache</button>
+            <div id="cache-details" class="cache-info"></div>
+        </div>
+        
+        <div class="status" id="network-status">
+            <h3>🌐 Estado de Red</h3>
+            <p id="network-info">Online: <span id="online-status">?</span></p>
+            <button onclick="testOffline()">Simular Offline</button>
+        </div>
+        
+        <div class="status">
+            <h3>🧪 Tests de Funcionalidad</h3>
+            <button onclick="testNotifications()">Test Notificaciones</button>
+            <button onclick="testLocalStorage()">Test Storage</button>
+            <button onclick="testApiCache()">Test API Cache</button>
+            <button onclick="window.location.href='/'">Ir a la App</button>
+        </div>
+    </div>
+
+    <script>
+        let deferredPrompt;
+        
+        // Verificar Service Worker
+        async function checkServiceWorker() {
+            const swInfo = document.getElementById('sw-info');
+            const swStatus = document.getElementById('sw-status');
+            
+            if ('serviceWorker' in navigator) {
+                try {
+                    const registration = await navigator.serviceWorker.getRegistration();
+                    if (registration) {
+                        swInfo.innerHTML = `✅ Service Worker registrado<br>Scope: ${registration.scope}<br>Estado: ${registration.active ? 'Activo' : 'Inactivo'}`;
+                        swStatus.className = 'status success';
+                    } else {
+                        swInfo.innerHTML = '⚠️ Service Worker no encontrado - registrando...';
+                        swStatus.className = 'status warning';
+                        registerSW();
+                    }
+                } catch (error) {
+                    swInfo.innerHTML = `❌ Error: ${error.message}`;
+                    swStatus.className = 'status error';
+                }
+            } else {
+                swInfo.innerHTML = '❌ Service Workers no soportados';
+                swStatus.className = 'status error';
+            }
+        }
+        
+        // Registrar Service Worker
+        async function registerSW() {
+            try {
+                const registration = await navigator.serviceWorker.register('/sw.js');
+                console.log('SW registrado:', registration);
+                checkServiceWorker();
+            } catch (error) {
+                console.error('Error registrando SW:', error);
+            }
+        }
+        
+        // Verificar Manifest
+        async function checkManifest() {
+            const manifestInfo = document.getElementById('manifest-info');
+            const manifestStatus = document.getElementById('manifest-status');
+            
+            try {
+                const response = await fetch('/manifest.json');
+                const manifest = await response.json();
+                manifestInfo.innerHTML = `✅ Manifest cargado<br>Nombre: ${manifest.name}<br>Iconos: ${manifest.icons.length}`;
+                manifestStatus.className = 'status success';
+            } catch (error) {
+                manifestInfo.innerHTML = `❌ Error cargando manifest: ${error.message}`;
+                manifestStatus.className = 'status error';
+            }
+        }
+        
+        // Verificar instalación
+        function checkInstallation() {
+            const installInfo = document.getElementById('install-info');
+            const installStatus = document.getElementById('install-status');
+            const installBtn = document.getElementById('install-btn');
+            
+            // Verificar si ya está instalado
+            if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone) {
+                installInfo.innerHTML = '✅ PWA ya está instalada';
+                installStatus.className = 'status success';
+            } else {
+                installInfo.innerHTML = '⚠️ PWA no instalada';
+                installStatus.className = 'status warning';
+                
+                // Mostrar botón si es posible instalar
+                if (deferredPrompt) {
+                    installBtn.style.display = 'inline-block';
+                }
+            }
+        }
+        
+        // Instalar PWA
+        async function installPWA() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                console.log('Resultado instalación:', outcome);
+                deferredPrompt = null;
+                checkInstallation();
+            }
+        }
+        
+        // Test Cache
+        async function testCache() {
+            const cacheDetails = document.getElementById('cache-details');
+            try {
+                const cacheNames = await caches.keys();
+                let html = '<h4>Caches disponibles:</h4>';
+                
+                for (const name of cacheNames) {
+                    const cache = await caches.open(name);
+                    const keys = await cache.keys();
+                    html += `<div><strong>${name}:</strong> ${keys.length} items</div>`;
+                }
+                
+                cacheDetails.innerHTML = html;
+            } catch (error) {
+                cacheDetails.innerHTML = `Error: ${error.message}`;
+            }
+        }
+        
+        // Limpiar caches
+        async function clearAllCaches() {
+            try {
+                const cacheNames = await caches.keys();
+                await Promise.all(cacheNames.map(name => caches.delete(name)));
+                document.getElementById('cache-details').innerHTML = '✅ Todos los caches eliminados';
+            } catch (error) {
+                document.getElementById('cache-details').innerHTML = `❌Error: ${error.message}`;
+            }
+        }
+        
+        // Test notificaciones
+        async function testNotifications() {
+            if ('Notification' in window) {
+                const permission = await Notification.requestPermission();
+                if (permission === 'granted') {
+                    new Notification('🎯 Test PWA', {
+                        body: 'Las notificaciones funcionan correctamente!',
+                        icon: '/icons/icon-192x192.png'
+                    });
+                }
+            } else {
+                alert('Notificaciones no soportadas');
+            }
+        }
+        
+        // Test LocalStorage
+        function testLocalStorage() {
+            try {
+                localStorage.setItem('pwa-test', JSON.stringify({ timestamp: Date.now() }));
+                const data = JSON.parse(localStorage.getItem('pwa-test'));
+                alert(`✅ LocalStorage OK: ${data.timestamp}`);
+            } catch (error) {
+                alert(`❌ LocalStorage Error: ${error.message}`);
+            }
+        }
+        
+        // Test API Cache
+        async function testApiCache() {
+            try {
+                const response = await fetch('https://pogoapi.net/api/v1/pokemon_stats.json');
+                const data = await response.json();
+                alert(`✅ API Response: ${Object.keys(data).length} Pokémon`);
+            } catch (error) {
+                alert(`❌ API Error: ${error.message}`);
+            }
+        }
+        
+        // Estado de red
+        function updateNetworkStatus() {
+            document.getElementById('online-status').textContent = navigator.onLine ? '✅' : '❌';
+        }
+        
+        // Simular offline (solo visual)
+        function testOffline() {
+            alert('Para probar modo offline, desconecta tu red o usa DevTools > Network > Offline');
+        }
+        
+        // Event listeners
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            checkInstallation();
+        });
+        
+        window.addEventListener('online', updateNetworkStatus);
+        window.addEventListener('offline', updateNetworkStatus);
+        
+        // Inicializar tests
+        document.addEventListener('DOMContentLoaded', () => {
+            checkServiceWorker();
+            checkManifest();
+            checkInstallation();
+            updateNetworkStatus();
+        });
+    </script>
+</body>
+</html>

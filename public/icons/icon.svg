@@ -1,0 +1,24 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Fondo con degradado -->
+  <rect width="512" height="512" rx="108" fill="url(#gradient)"/>
+  
+  <!-- Pokeball principal -->
+  <circle cx="256" cy="256" r="160" fill="white" stroke="#333" stroke-width="8"/>
+  <path d="M 96 256 L 416 256" stroke="#333" stroke-width="16"/>
+  <path d="M 96 256 A 160 160 0 0 1 416 256" fill="#ef4444"/>
+  
+  <!-- Centro de la pokeball -->
+  <circle cx="256" cy="256" r="32" fill="white" stroke="#333" stroke-width="8"/>
+  <circle cx="256" cy="256" r="16" fill="#333"/>
+  
+  <!-- Rayo de energía -->
+  <path d="M 200 180 L 240 220 L 220 220 L 260 280 L 220 240 L 240 240 Z" fill="#fbbf24" opacity="0.9"/>
+  <path d="M 280 180 L 320 220 L 300 220 L 340 280 L 300 240 L 320 240 Z" fill="#fbbf24" opacity="0.9"/>
+  
+  <defs>
+    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1d4ed8;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+</svg>
