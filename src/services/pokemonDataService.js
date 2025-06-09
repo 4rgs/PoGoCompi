@@ -19,18 +19,6 @@ class PokemonDataService {
     } catch (error) {
       console.warn('Error cargando desde API, intentando datos locales...', error);
       
-      try {
-        // Importar datos locales como fallback
-        const localData = await import('../data/pokemon_data.json');
-        this.pokemonData = localData.default;
-        this.dataSource = 'local';
-        console.log(`Datos cargados desde archivo local: ${this.pokemonData.length} Pokémon`);
-        return { success: true, source: 'local', count: this.pokemonData.length };
-      } catch (localError) {
-        console.error('Error cargando datos locales:', localError);
-        this.dataSource = 'none';
-        return { success: false, source: 'none', error: localError.message };
-      }
     }
   }
 
