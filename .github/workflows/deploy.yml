@@ -2,9 +2,9 @@ name: Deploy to Google Cloud Run
 
 on:
   push:
-    branches: [ main ]  # 🔧 CONFIGURA: Cambia 'main' por tu rama principal si es diferente
+    branches: [ develop ]  # 🔧 CONFIGURA: Cambia 'main' por tu rama principal si es diferente
   pull_request:
-    branches: [ main ]  # 🔧 CONFIGURA: Cambia 'main' por tu rama principal si es diferente
+    branches: [ develop ]  # 🔧 CONFIGURA: Cambia 'main' por tu rama principal si es diferente
   workflow_dispatch:     # Permite ejecutar manualmente desde GitHub
 
 env:
@@ -18,7 +18,7 @@ env:
 jobs:
   deploy:
     # Solo ejecutar en push a main (no en PRs)
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/develop' || github.event_name == 'workflow_dispatch'
     
     runs-on: ubuntu-latest
     
