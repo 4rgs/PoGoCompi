@@ -1,0 +1,135 @@
+name: Deploy to Google Cloud Run
+
+on:
+  push:
+    branches: [ main ]  # 🔧 CONFIGURA: Cambia 'main' por tu rama principal si es diferente
+  pull_request:
+    branches: [ main ]  # 🔧 CONFIGURA: Cambia 'main' por tu rama principal si es diferente
+  workflow_dispatch:     # Permite ejecutar manualmente desde GitHub
+
+env:
+  # 🔧 CONFIGURA ESTOS VALORES SEGÚN TU PROYECTO:
+  PROJECT_ID: pogocompi                    # Tu Project ID de Google Cloud
+  SERVICE_NAME: pogo-compi                 # Nombre de tu servicio en Cloud Run
+  REGION: us-central1                      # Región donde desplegar
+  GAR_LOCATION: us-central1                # Ubicación del Artifact Registry
+  REPOSITORY: pogo-compi-repo              # Nombre del repositorio en Artifact Registry
+
+jobs:
+  deploy:
+    # Solo ejecutar en push a main (no en PRs)
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
+    
+    runs-on: ubuntu-latest
+    
+    # 🔐 IMPORTANTE: Configura estos permisos en GitHub
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'  # 🔧 CONFIGURA: Cambia por tu versión de Node.js
+        cache: 'npm'
+
+    # 🔐 CONFIGURACIÓN REQUERIDA EN GITHUB:
+    # Ve a Settings > Secrets and variables > Actions y agrega:
+    # - WIF_PROVIDER: projects/TU_PROJECT_NUMBER/locations/global/workloadIdentityPools/TU_POOL/providers/TU_PROVIDER
+    # - WIF_SERVICE_ACCOUNT: tu-service-account@tu-project.iam.gserviceaccount.com
+    # 
+    # Para configurar Workload Identity Federation, sigue estos pasos:
+    # 1. Crear un pool de identidad: gcloud iam workload-identity-pools create "github-pool" --project="tu-project" --location="global"
+    # 2. Crear un proveedor: gcloud iam workload-identity-pools providers create-oidc "github-provider" --project="tu-project" --location="global" --workload-identity-pool="github-pool" --attribute-mapping="google.subject=assertion.sub,attribute.actor=assertion.actor,attribute.repository=assertion.repository" --issuer-uri="https://token.actions.githubusercontent.com"
+    # 3. Crear service account con permisos necesarios
+    # 4. Configurar binding: gcloud iam service-accounts add-iam-policy-binding tu-service-account@tu-project.iam.gserviceaccount.com --project="tu-project" --role="roles/iam.workloadIdentityUser" --member="principalSet://iam.googleapis.com/projects/TU_PROJECT_NUMBER/locations/global/workloadIdentityPools/github-pool/attribute.repository/TU_USUARIO/TU_REPO"
+
+    - name: Google Auth
+      id: auth
+      uses: 'google-github-actions/auth@v2'
+      with:
+        workload_identity_provider: '${{ secrets.WIF_PROVIDER }}'       # 🔐 AGREGAR EN SECRETS
+        service_account: '${{ secrets.WIF_SERVICE_ACCOUNT }}'          # 🔐 AGREGAR EN SECRETS
+
+    - name: Set up Cloud SDK
+      uses: 'google-github-actions/setup-gcloud@v2'
+
+    - name: Configure Docker to use gcloud as credential helper
+      run: gcloud auth configure-docker $GAR_LOCATION-docker.pkg.dev
+
+    # Crear repositorio en Artifact Registry si no existe
+    - name: Create Artifact Registry repository (if needed)
+      run: |
+        gcloud artifacts repositories create $REPOSITORY \
+          --repository-format=docker \
+          --location=$GAR_LOCATION \
+          --description="Docker repository for $SERVICE_NAME" \
+          --project=$PROJECT_ID || echo "Repository already exists"
+
+    - name: Build Docker image
+      run: |
+        docker build -t $GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$SERVICE_NAME:$GITHUB_SHA \
+                     -t $GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$SERVICE_NAME:latest .
+
+    - name: Push Docker image to Artifact Registry
+      run: |
+        docker push $GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$SERVICE_NAME:$GITHUB_SHA
+        docker push $GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$SERVICE_NAME:latest
+
+    - name: Deploy to Cloud Run
+      run: |
+        gcloud run deploy $SERVICE_NAME \
+          --image $GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$SERVICE_NAME:$GITHUB_SHA \
+          --platform managed \
+          --region $REGION \
+          --allow-unauthenticated \
+          --port 8080 \
+          --memory 512Mi \
+          --cpu 1 \
+          --min-instances 0 \
+          --max-instances 10 \
+          --project $PROJECT_ID \
+          --quiet
+
+    - name: Get service URL
+      run: |
+        echo "🌐 Aplicación desplegada en:"
+        gcloud run services describe $SERVICE_NAME \
+          --platform managed \
+          --region $REGION \
+          --format 'value(status.url)' \
+          --project $PROJECT_ID
+
+  # Job para PRs - solo build y test (sin deploy)
+  test:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Run tests (if you have any)
+      run: |
+        # 🔧 CONFIGURA: Agrega tus comandos de test aquí
+        # npm run test
+        echo "No tests configured yet"
+
+    - name: Build application
+      run: npm run build
+
+    - name: Build Docker image (test)
+      run: docker build -t test-image .

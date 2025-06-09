@@ -38,5 +38,5 @@ EXPOSE 8080
 # Usar dumb-init como entrypoint
 ENTRYPOINT ["dumb-init", "--"]
 
-# Comando para iniciar Nginx en primer plano
-CMD ["nginx", "-g", "daemon off;"]
+# Comando para iniciar Nginx y configurarlo para usar /tmp
+CMD ["nginx", "-g", "daemon off; pid /tmp/nginx/nginx.pid;"]
