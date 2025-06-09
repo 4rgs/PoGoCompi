@@ -247,7 +247,7 @@ function App() {
       // Mostrar notificación de éxito con detalles del combate
       const combatInfo = dpsResult.combatDetails.short; // Usar ventana corta (10s) para la notificación
       showNotification(
-        `✅ ${uniqueName} agregado! DPS: ${dpsResult.dps.short.toFixed(1)} | ${combatInfo.fastMoveCount}F + ${combatInfo.chargedMoveCount}C en 10s`, 
+        `✅ ${uniqueName} agregado! DPS: ${dpsResult.dps.short?.toFixed(1)} | ${combatInfo.fastMoveCount}F + ${combatInfo.chargedMoveCount}C en 10s`, 
         'success'
       );
     } catch (error) {

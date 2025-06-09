@@ -180,7 +180,7 @@ function DPSChart({ pokemonList }) {
         label: 'DPS Promedio',
         data: sortedPokemonList.map(p => {
           const dps = getDPS(p, 'short');
-          return parseFloat(dps.toFixed(1));
+          return parseFloat(dps?.toFixed(1));
         }),
         backgroundColor: 'rgba(34, 197, 94, 0.3)',
         borderColor: 'rgba(34, 197, 94, 0.8)',
@@ -253,7 +253,7 @@ function DPSChart({ pokemonList }) {
             } else if (label.includes('Daño Total (60s)')) {
               return `💥 ${value} (60s)`;
             } else if (label.includes('DPS Promedio')) {
-              return `⚡ DPS: ${value.toFixed(1)}`;
+              return `⚡ DPS: ${value?.toFixed(1)}`;
             }
             return `${value}`;
           },
@@ -270,7 +270,7 @@ function DPSChart({ pokemonList }) {
                            datasetLabel.includes('30s') ? 'medium' : 'long';
               
               // Línea 1: Stats de combate principales (horizontal)
-              const dps = getDPS(pokemon, window).toFixed(1);
+              const dps = getDPS(pokemon, window)?.toFixed(1);
               const fastAttacks = pokemon.combatDetails?.[window]?.fastAttacks || 'N/A';
               const chargedAttacks = pokemon.combatDetails?.[window]?.chargedAttacks || 'N/A';
               labels.push(`⚔️ DPS: ${dps} | ⚡ ${fastAttacks} Fast | 💫 ${chargedAttacks} Charged`);

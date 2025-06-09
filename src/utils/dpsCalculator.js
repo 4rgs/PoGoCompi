@@ -98,9 +98,9 @@ export function calculateDPS({
   return {
     attack: Math.round(attack),
     dps: {
-      short: parseFloat(dpsResults.short.toFixed(2)),    // 10s
-      medium: parseFloat(dpsResults.medium.toFixed(2)),  // 30s  
-      long: parseFloat(dpsResults.long.toFixed(2))       // 60s
+      short: parseFloat(dpsResults.short?.toFixed(2)),    // 10s
+      medium: parseFloat(dpsResults.medium?.toFixed(2)),  // 30s  
+      long: parseFloat(dpsResults.long?.toFixed(2))       // 60s
     },
     combatDetails: combatResults,
     moves: {
@@ -261,9 +261,9 @@ function calculateAdvancedMetrics(fastMove, chargedMove) {
   };
 
   return {
-    timeToCharge: parseFloat(timeToCharge.toFixed(2)),
-    cyclesPerMinute: parseFloat(cyclesPerMinute.toFixed(2)),
-    cycleDPS: parseFloat(cycleDPS.toFixed(2)),
+    timeToCharge: parseFloat(timeToCharge?.toFixed(2)),
+    cyclesPerMinute: parseFloat(cyclesPerMinute?.toFixed(2)),
+    cycleDPS: parseFloat(cycleDPS?.toFixed(2)),
     damagePerCycle: Math.round(damagePerCycle),
     movesetVersatility,
     recommendedStrategy: cycleDPS > fastMove.dps ? 'charged_focused' : 'fast_focused'
@@ -298,7 +298,7 @@ export function calculateSimpleDPS({
 
   return { 
     attack: Math.round(attack), 
-    dps: parseFloat(dps.toFixed(2)),
+    dps: parseFloat(dps?.toFixed(2)),
     appliedBonuses: {
       stab: stab,
       shadow: isShadow
