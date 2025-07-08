@@ -14,7 +14,7 @@ COPY --from=build /app/dist ./
 
 RUN rm -rf /etc/nginx/conf.d/*
 
-EXPOSE 80                       # puerto real que escucha Nginx
+EXPOSE 80                       
 
 HEALTHCHECK CMD wget -qO- http://localhost:80/ || exit 1
 
