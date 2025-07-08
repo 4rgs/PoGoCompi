@@ -1,0 +1,44 @@
+name: Build & Publish → GHCR
+
+on:
+  push:
+    branches: [develop]      # ⚠️ tu rama de despliegue
+  # —opcional—
+  workflow_dispatch:         # permite lanzarlo a mano desde Actions
+
+jobs:
+  build-publish:
+    runs-on: ubuntu-latest
+
+    # Para que el job pueda subir paquetes
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+    # 1) Descarga tu código
+    - uses: actions/checkout@v4
+
+    # 2) Prepara Buildx (builder multiplataforma)
+    - uses: docker/setup-buildx-action@v3
+
+    # 3) Login a GHCR con tu secret
+    - name: Log in to GHCR
+      uses: docker/login-action@v3
+      with:
+        registry: ghcr.io
+        username: ${{ github.repository_owner }}
+        password: ${{ secrets.GHCR_TOKEN }}
+
+    # 4) Construye y publica la imagen
+    - name: Build & Push
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        push: true
+        # IMPORTANTE → pon el nombre del repo en minúsculas
+        tags: |
+          ghcr.io/${{ github.repository_owner }}/pogocompi:latest
+          ghcr.io/${{ github.repository_owner }}/pogocompi:${{ github.sha }}
+        # —opcional— ajusta la plataforma si compilas solo para x86:
+        platforms: linux/amd64
