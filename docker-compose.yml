@@ -1,0 +1,12 @@
+services:
+  app:
+    image: ghcr.io/4rgs/pogocompi:latest   # todo en minúsculas
+    restart: unless-stopped
+    ports:
+      - "80:80"            # host:container; ambos a 80 ahora
+  watchtower:
+    image: containrrr/watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: --interval 1800
+    restart: unless-stopped

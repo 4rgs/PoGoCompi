@@ -1,47 +1,29 @@
-# Etapa de build - Usar versión segura y con soporte LTS
+# ──────────────── build stage ────────────────
 FROM node:20-alpine AS build
-
 WORKDIR /app
 
-# Copiar package.json y package-lock.json
+# 1️⃣ aprovecha la caché: primero solo package*.json
 COPY package*.json ./
+RUN npm ci --omit=dev           # instala SOLO deps de producción
 
-# Instalar todas las dependencias (incluyendo devDependencies para build)
-RUN npm ci
-
-# Copiar el resto del código fuente
+# 2️⃣ copia el resto y compila
 COPY . .
+RUN npm run build               # genera /app/dist
 
-# Construir la aplicación para producción
-RUN npm run build
+# ─────────────── runtime stage ───────────────
+FROM nginx:1.25-alpine          # versión fija → builds reproducibles
+WORKDIR /usr/share/nginx/html
 
-# Etapa de producción con Nginx
-FROM nginx:alpine
+# 3️⃣ copia el resultado final
+COPY --from=build /app/dist ./
 
-# Preparar entorno de Nginx: instalar utilidades, crear directorios necesarios
-RUN apk add --no-cache dumb-init && \
-    mkdir -p /tmp/nginx && \
-    chmod 755 /tmp/nginx
+# 4️⃣ opcional: elimina los archivos de configuración por defecto
+RUN rm -rf /etc/nginx/conf.d/*
+#    ↳ si quieres un nginx.conf propio, cópialo aquí:
+# COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# Copiar configuración personalizada de Nginx
-COPY nginx.conf /etc/nginx/nginx.conf
+EXPOSE 80                       # puerto real que escucha Nginx
 
-# Copiar archivos construidos desde la etapa de build
-COPY --from=build /app/dist /usr/share/nginx/html
+HEALTHCHECK CMD wget -qO- http://localhost:80/ || exit 1
 
-# Crear un script de inicio para manejar correctamente la PID y los logs
-RUN echo '#!/bin/sh\n\
-mkdir -p /tmp/nginx\n\
-touch /tmp/nginx/access.log /tmp/nginx/error.log\n\
-echo "Starting Nginx..."\n\
-exec nginx -g "daemon off; pid /tmp/nginx/nginx.pid;"\n' > /docker-entrypoint.sh && \
-    chmod +x /docker-entrypoint.sh
-
-# Exponer puerto que usa Cloud Run por defecto
-EXPOSE 8080
-
-# Usar dumb-init como entrypoint para una mejor gestión de señales
-ENTRYPOINT ["dumb-init", "--"]
-
-# Comando para iniciar Nginx a través de nuestro script
-CMD ["/docker-entrypoint.sh"]
+CMD ["nginx", "-g", "daemon off;"]
