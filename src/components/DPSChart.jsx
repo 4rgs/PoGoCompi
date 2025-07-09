@@ -13,18 +13,14 @@ import {
   LineElement,
   PointElement,
   Title,
-  SubTitle,
-  BarController,
-  LineController
+  SubTitle
 } from 'chart.js';
 
 // Registrar todos los elementos necesarios para gráficos mixtos
 ChartJS.register(
   BarElement, 
   CategoryScale,
-  BarController,
   LinearScale, 
-  LineController,
   Tooltip, 
   Legend,
   LineElement,
