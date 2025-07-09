@@ -30,6 +30,25 @@ import {
 } from '@mui/icons-material';
 import { usePWA } from '../hooks/usePWA';
 
+// Obtener información de la build
+const getAppInfo = () => {
+  const version = __APP_VERSION__ || '1.0.0';
+  const commit = __GIT_COMMIT__ || 'unknown';
+  const buildDate = __BUILD_DATE__ || new Date().toISOString();
+  
+  return {
+    version,
+    commit: commit.substring(0, 7), // Solo los primeros 7 caracteres del commit
+    buildDate: new Date(buildDate).toLocaleDateString('es-ES', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    })
+  };
+};
+
 const PWAStatus = ({ onCacheApiData }) => {
   const {
     isInstallable,
@@ -46,6 +65,8 @@ const PWAStatus = ({ onCacheApiData }) => {
   const [showCacheDialog, setShowCacheDialog] = useState(false);
   const [installResult, setInstallResult] = useState(null);
   const [isClearing, setIsClearing] = useState(false);
+
+  const appInfo = getAppInfo();
 
   // Mostrar prompt de instalación automáticamente después de 10 segundos
   useEffect(() => {
@@ -164,7 +185,14 @@ const PWAStatus = ({ onCacheApiData }) => {
       >
         <DialogTitle sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           <InstallIcon color="primary" />
-          Instalar Comparador Pokémon GO
+          <Box>
+            <Typography variant="h6" component="div">
+              Comparador Pokémon GO
+            </Typography>
+            <Typography variant="caption" color="text.secondary">
+              v{appInfo.version} • {appInfo.commit} • {appInfo.buildDate}
+            </Typography>
+          </Box>
           <IconButton
             sx={{ ml: 'auto' }}
             onClick={() => setShowInstallPrompt(false)}
@@ -218,7 +246,14 @@ const PWAStatus = ({ onCacheApiData }) => {
       >
         <DialogTitle sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           <CacheIcon color="primary" />
-          Estado del Cache
+          <Box>
+            <Typography variant="h6" component="div">
+              Estado del Cache
+            </Typography>
+            <Typography variant="caption" color="text.secondary">
+              v{appInfo.version} • {appInfo.commit}
+            </Typography>
+          </Box>
           <IconButton
             sx={{ ml: 'auto' }}
             onClick={() => setShowCacheDialog(false)}

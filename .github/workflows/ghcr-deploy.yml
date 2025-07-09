@@ -42,3 +42,6 @@ jobs:
           ghcr.io/${{ github.repository_owner }}/pogocompi:${{ github.sha }}
         # —opcional— ajusta la plataforma si compilas solo para x86:
         platforms: linux/amd64
+        build-args: |
+          VITE_GIT_COMMIT=${{ github.sha }}
+          VITE_BUILD_DATE=${{ github.run_id }}
