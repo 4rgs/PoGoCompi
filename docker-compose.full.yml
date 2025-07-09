@@ -1,0 +1,96 @@
+version: '3.8'
+
+# 🚀 Pokémon GO Comparador - Setup Completo con Auto-actualización
+# Para Zima Board con CasaOS
+
+services:
+  # Aplicación principal
+  pogocompi:
+    image: ghcr.io/4rgs/pogocompi:latest
+    container_name: pogocompi-app
+    hostname: pogocompi-app
+    restart: unless-stopped
+    ports:
+      - "3001:80"
+    environment:
+      - TZ=America/Mexico_City  # Cambia por tu zona horaria
+    volumes:
+      # Opcional: persistir logs
+      - ./logs:/var/log/nginx:rw
+    networks:
+      - pogocompi-net
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:80/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    labels:
+      # Auto-update con Watchtower
+      - "com.centurylinklabs.watchtower.enable=true"
+      # CasaOS
+      - "casaos.name=Pokémon GO DPS"
+      - "casaos.icon=🔍"
+
+  # Auto-actualizador
+  watchtower:
+    image: containrrr/watchtower:latest
+    container_name: pogocompi-updater
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    environment:
+      - TZ=America/Mexico_City
+      - WATCHTOWER_CLEANUP=true
+      - WATCHTOWER_INCLUDE_RESTARTING=true
+      - WATCHTOWER_LABEL_ENABLE=true
+      - WATCHTOWER_POLL_INTERVAL=3600  # Revisar cada hora
+      - WATCHTOWER_ROLLING_RESTART=true
+      # Notificaciones opcionales (descomenta y configura si quieres)
+      # - WATCHTOWER_NOTIFICATIONS=slack
+      # - WATCHTOWER_NOTIFICATION_SLACK_HOOK_URL=tu-webhook-url
+    command: >
+      --schedule "0 2 * * *"
+      --cleanup
+      --label-enable
+      --rolling-restart
+    networks:
+      - pogocompi-net
+    depends_on:
+      - pogocompi
+
+  # Monitor de salud (opcional)
+  healthcheck-monitor:
+    image: alpine:latest
+    container_name: pogocompi-monitor
+    restart: unless-stopped
+    command: >
+      sh -c "
+      while true; do
+        if ! wget --quiet --tries=1 --spider http://pogocompi-app:80/health; then
+          echo '[ALERTA] PoGoCompi no responde en $(date)'
+        fi
+        sleep 300
+      done"
+    networks:
+      - pogocompi-net
+    depends_on:
+      - pogocompi
+    profiles:
+      - monitoring  # Solo se ejecuta si usas: docker-compose --profile monitoring up
+
+networks:
+  pogocompi-net:
+    driver: bridge
+    name: pogocompi-network
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+
+# Variables de entorno opcionales
+# Crear archivo .env con:
+# TZ=tu_zona_horaria
+# DOMAIN=tu_dominio.com (opcional)
+# SLACK_WEBHOOK=tu_webhook (opcional)
