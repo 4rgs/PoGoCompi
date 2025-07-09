@@ -11,9 +11,9 @@ services:
     hostname: pogocompi-app
     restart: unless-stopped
     ports:
-      - "3001:80"
+      - "80:80"
     environment:
-      - TZ=America/Mexico_City  # Cambia por tu zona horaria
+      - TZ=America/Santiago  # Cambia por tu zona horaria
     volumes:
       # Opcional: persistir logs
       - ./logs:/var/log/nginx:rw
@@ -29,7 +29,7 @@ services:
       # Auto-update con Watchtower
       - "com.centurylinklabs.watchtower.enable=true"
       # CasaOS
-      - "casaos.name=Pokémon GO DPS"
+      - "casaos.name=Pokémon GO DPS Comparator"
       - "casaos.icon=🔍"
 
   # Auto-actualizador

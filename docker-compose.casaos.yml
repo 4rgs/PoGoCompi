@@ -10,9 +10,9 @@ services:
     hostname: pogocompi
     restart: unless-stopped
     ports:
-      - "3001:80"
+      - "80:80"
     environment:
-      - TZ=${TZ:-America/Mexico_City}
+      - TZ=${TZ:-America/Santiago}
       - PUID=1000
       - PGID=1000
     networks:
@@ -30,7 +30,7 @@ services:
       - "casaos.description=Analiza y compara el DPS de tus Pokémon favoritos con precisión profesional. PWA con funcionalidad offline."
       - "casaos.icon=https://raw.githubusercontent.com/4rgs/PoGoCompi/develop/public/icons/icon-512x512.png"
       - "casaos.category=Entertainment"
-      - "casaos.port=3001"
+      - "casaos.port=80"
       - "casaos.scheme=http"
       - "casaos.index=/"
       # Traefik Labels (si usas reverse proxy)
@@ -68,34 +68,34 @@ x-casaos:
     en_us: "Pokémon GO DPS Comparator"
     es_es: "Comparador DPS Pokémon GO"
   category: Entertainment
-  port_map: "3001"
+  port_map: "80"
   scheme: http
   index: /
   tips:
     before_install:
       en_us: |
         ## Before Installation:
-        - Make sure port 3001 is available
-        - Application will be accessible at http://your-zima-ip:3001
+        - Make sure port 80 is available
+        - Application will be accessible at http://your-zima-ip:80
         - PWA can be installed directly from browser
         
       es_es: |
         ## Antes de la instalación:
-        - Asegúrate que el puerto 3001 esté disponible
-        - La aplicación será accesible en http://ip-de-tu-zima:3001
+        - Asegúrate que el puerto 80 esté disponible
+        - La aplicación será accesible en http://ip-de-tu-zima:80
         - La PWA se puede instalar directamente desde el navegador
         
     after_install:
       en_us: |
         ## After Installation:
-        - Access at http://your-zima-ip:3001
+        - Access at http://your-zima-ip:80
         - Install as PWA for better experience
         - Data updates automatically
         - Works offline once cached
         
       es_es: |
         ## Después de la instalación:
-        - Accede en http://ip-de-tu-zima:3001
+        - Accede en http://ip-de-tu-zima:80
         - Instala como PWA para mejor experiencia
         - Los datos se actualizan automáticamente
         - Funciona offline una vez cacheado
