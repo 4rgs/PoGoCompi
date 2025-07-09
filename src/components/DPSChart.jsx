@@ -2,6 +2,7 @@ import { Chart } from 'react-chartjs-2';
 import { Paper, Typography, Box, useTheme, useMediaQuery } from '@mui/material';
 import { BarChart as BarChartIcon, ShowChart as ChartIcon } from '@mui/icons-material';
 import { getBlendedTypeColor, getTypeColorWithAlpha } from '../utils/typeColors';
+
 import {
   Chart as ChartJS,
   BarElement,
