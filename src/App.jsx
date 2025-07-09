@@ -5,6 +5,7 @@ import PokemonForm from './components/PokemonForm';
 import ComparisonTable from './components/ComparisonTable';
 import DPSChart from './components/DPSChart';
 import PWAStatus from './components/PWAStatus';
+import AppFooter from './components/AppFooter';
 import pokemonDataService from './services/pokemonDataService';
 
 // Hacer el servicio disponible globalmente para debugging
@@ -294,6 +295,9 @@ function App() {
             mx: 'auto',
             position: 'relative',
             zIndex: 1,
+            flex: 1,
+            display: 'flex',
+            flexDirection: 'column',
           }}
         >
           <Box textAlign="center" mb={{ xs: 4, sm: 5, md: 6 }}>
@@ -331,10 +335,16 @@ function App() {
               🎯 Analiza y compara el DPS de tus Pokémon favoritos con precisión profesional
             </Typography>
           </Box>
-          <PokemonForm onAdd={handleAddPokemon} onShowMessage={showNotification} />
-          <ComparisonTable pokemonList={pokemonList} onClear={handleClearList} />
-          <DPSChart pokemonList={pokemonList} />
+          
+          <Box sx={{ flex: 1 }}>
+            <PokemonForm onAdd={handleAddPokemon} onShowMessage={showNotification} />
+            <ComparisonTable pokemonList={pokemonList} onClear={handleClearList} />
+            <DPSChart pokemonList={pokemonList} />
+          </Box>
         </Container>
+
+        {/* Footer con información de versión */}
+        <AppFooter />
       </Box>
 
       {/* PWA Status - Botones de instalación y gestión de cache */}

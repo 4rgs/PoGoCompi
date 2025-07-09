@@ -20,12 +20,16 @@ RUN npm run build                # genera /app/dist
 FROM nginx:1.26-alpine AS runtime
 WORKDIR /usr/share/nginx/html
 
-# Instalar wget para el healthcheck
-RUN apk add --no-cache wget
+# Instalar wget para el healthcheck y crear directorios necesarios
+RUN apk add --no-cache wget && \
+    mkdir -p /tmp/nginx
+
+# Copiar configuración personalizada de nginx para PWA
+COPY nginx.conf /etc/nginx/nginx.conf
 
 # ⚠️ SOLO artefactos finales; el nodo_modules se descarta
 COPY --from=build /app/dist .
 
 EXPOSE 80
-HEALTHCHECK CMD wget -qO- http://localhost:80/ || exit 1
+HEALTHCHECK CMD wget -qO- http://localhost:80/health || exit 1
 CMD ["nginx", "-g", "daemon off;"]
