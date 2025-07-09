@@ -1,0 +1,130 @@
+version: '3.8'
+
+# 🚀 Pokémon GO Comparador - Optimizado para Portainer
+# 🐋 Incluye Watchtower para auto-actualización
+
+services:
+  # Aplicación principal
+  pogocompi:
+    image: ghcr.io/4rgs/pogocompi:latest
+    container_name: pogocompi-app
+    hostname: pogocompi
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    environment:
+      - TZ=America/Santiago
+      - NGINX_ENTRYPOINT_QUIET_LOGS=1
+    volumes:
+      # Logs persistentes (opcional)
+      - pogocompi-logs:/var/log/nginx
+    networks:
+      - pogocompi-network
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:80/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    labels:
+      # Watchtower
+      - "com.centurylinklabs.watchtower.enable=true"
+      # Portainer
+      - "io.portainer.accesscontrol.teams=administrators"
+      - "io.portainer.accesscontrol.users=admin"
+      # Metadatos
+      - "traefik.enable=false"
+      - "app.name=Pokémon GO DPS Comparator"
+      - "app.description=Analiza y compara el DPS de Pokémon GO"
+      - "app.version=latest"
+      - "app.url=http://localhost"
+      - "app.icon=🔍"
+      - "maintainer=4rgs"
+    depends_on:
+      - watchtower
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+        reservations:
+          cpus: '0.1'
+          memory: 64M
+
+  # Auto-actualizador Watchtower
+  watchtower:
+    image: containrrr/watchtower:latest
+    container_name: pogocompi-watchtower
+    hostname: watchtower
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    environment:
+      - TZ=America/Santiago
+      - WATCHTOWER_CLEANUP=true
+      - WATCHTOWER_INCLUDE_RESTARTING=true
+      - WATCHTOWER_LABEL_ENABLE=true
+      - WATCHTOWER_POLL_INTERVAL=3600
+      - WATCHTOWER_ROLLING_RESTART=true
+      - WATCHTOWER_TIMEOUT=10s
+      - WATCHTOWER_LOG_LEVEL=info
+      - WATCHTOWER_INCLUDE_STOPPED=false
+      - WATCHTOWER_REVIVE_STOPPED=false
+      - WATCHTOWER_NO_STARTUP_MESSAGE=false
+    command: >
+      --schedule "0 2 * * *"
+      --cleanup
+      --label-enable
+      --rolling-restart
+      --log-level info
+    networks:
+      - pogocompi-network
+    labels:
+      # Portainer
+      - "io.portainer.accesscontrol.teams=administrators"
+      - "io.portainer.accesscontrol.users=admin"
+      # Metadatos
+      - "app.name=Watchtower Auto-updater"
+      - "app.description=Actualiza automáticamente PoGoCompi"
+      - "app.version=latest"
+      - "maintainer=containrrr"
+    deploy:
+      resources:
+        limits:
+          cpus: '0.1'
+          memory: 64M
+        reservations:
+          cpus: '0.05'
+          memory: 32M
+
+volumes:
+  pogocompi-logs:
+    driver: local
+    labels:
+      - "app.name=PoGoCompi Logs"
+      - "app.description=Logs persistentes de Nginx"
+
+networks:
+  pogocompi-network:
+    driver: bridge
+    name: pogocompi-net
+    labels:
+      - "app.name=PoGoCompi Network"
+      - "app.description=Red interna para PoGoCompi"
+    ipam:
+      config:
+        - subnet: 172.25.0.0/16
+          gateway: 172.25.0.1
+
+# Stack Labels para Portainer
+x-portainer-labels:
+  stack.name: "pogocompi"
+  stack.description: "Pokémon GO DPS Comparator con auto-actualización"
+  stack.version: "1.0"
+  stack.maintainer: "4rgs"
+  stack.url: "https://github.com/4rgs/PoGoCompi"
+  stack.icon: "🔍"
+  stack.category: "Entertainment"
+  stack.environment: "Production"

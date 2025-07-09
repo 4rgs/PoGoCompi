@@ -12,7 +12,7 @@ services:
     ports:
       - "80:80"
     environment:
-      - TZ=${TZ:-America/Santiago}
+      - TZ=${TZ:-America/Mexico_City}
       - PUID=1000
       - PGID=1000
     networks:
