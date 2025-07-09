@@ -40,6 +40,32 @@ services:
       # Watchtower
       - "com.centurylinklabs.watchtower.enable=true"
 
+  # Watchtower para auto-actualización
+  watchtower:
+    image: containrrr/watchtower:latest
+    container_name: pogocompi-watchtower
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    environment:
+      - TZ=${TZ:-America/Mexico_City}
+      - WATCHTOWER_CLEANUP=true
+      - WATCHTOWER_LABEL_ENABLE=true
+      - WATCHTOWER_POLL_INTERVAL=3600
+      - WATCHTOWER_SCHEDULE=0 2 * * *
+      - WATCHTOWER_ROLLING_RESTART=true
+      - WATCHTOWER_TIMEOUT=30s
+      - WATCHTOWER_LOG_LEVEL=info
+      - WATCHTOWER_SCOPE=pogocompi-app
+    networks:
+      - casa-network
+    depends_on:
+      - pogocompi
+    labels:
+      - "casaos.name=Watchtower Auto-updater"
+      - "casaos.description=Auto-actualiza PoGoCompi cuando hay nuevas versiones"
+      - "casaos.icon=🔄"
+
 networks:
   casa-network:
     external: true
@@ -78,12 +104,14 @@ x-casaos:
         - Make sure port 80 is available
         - Application will be accessible at http://your-zima-ip:80
         - PWA can be installed directly from browser
+        - Auto-updates with Watchtower included
         
       es_es: |
         ## Antes de la instalación:
         - Asegúrate que el puerto 80 esté disponible
         - La aplicación será accesible en http://ip-de-tu-zima:80
         - La PWA se puede instalar directamente desde el navegador
+        - Auto-actualización con Watchtower incluido
         
     after_install:
       en_us: |
@@ -92,6 +120,7 @@ x-casaos:
         - Install as PWA for better experience
         - Data updates automatically
         - Works offline once cached
+        - Auto-updates daily at 2:00 AM
         
       es_es: |
         ## Después de la instalación:
@@ -99,3 +128,4 @@ x-casaos:
         - Instala como PWA para mejor experiencia
         - Los datos se actualizan automáticamente
         - Funciona offline una vez cacheado
+        - Auto-actualización diaria a las 2:00 AM
