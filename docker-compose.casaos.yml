@@ -68,8 +68,11 @@ services:
 
 networks:
   casa-network:
-    external: true
+    driver: bridge
     name: casa-network
+    labels:
+      - "app.name=CasaOS Network"
+      - "app.description=Red para aplicaciones de CasaOS"
 
 # Metadatos para CasaOS App Store
 x-casaos:
