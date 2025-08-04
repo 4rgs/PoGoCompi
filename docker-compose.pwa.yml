@@ -1,0 +1,102 @@
+version: '3.8'
+
+services:
+  pogocompi:
+    image: 4rgs/pogocompi:latest
+    container_name: pogocompi-app
+    restart: unless-stopped
+    ports:
+      - "3001:80"
+    environment:
+      - TZ=America/Mexico_City
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:80/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    labels:
+      - "casaos.name=Pokémon GO Comparador"
+      - "casaos.icon=https://raw.githubusercontent.com/4rgs/PoGoCompi/develop/public/icons/icon-192x192.png"
+      - "casaos.category=Games"
+      - "casaos.description=Analiza y compara el DPS de tus Pokémon favoritos"
+      - "casaos.main=pogocompi"
+      - "casaos.author=4rgs"
+      - "casaos.developer=4rgs"
+      - "casaos.scheme=http"
+      - "casaos.hostname=/"
+      - "casaos.port_map=3001"
+      - "casaos.network_model=bridge"
+      - "casaos.web_ui_port=3001"
+      - "casaos.web_ui_path=/"
+      - "casaos.tips.before_install=Este comparador de Pokémon GO se puede instalar como PWA para mejor experiencia"
+      - "casaos.tips.after_install=Para instalar como PWA, visita la app en tu navegador y busca el ícono de instalación"
+      - "casaos.tips.https_required=Para funciones PWA completas, se recomienda acceso HTTPS"
+    networks:
+      - pogocompi-network
+
+  # Nginx para HTTPS (opcional pero recomendado para PWA)
+  nginx-ssl:
+    image: nginx:alpine
+    container_name: pogocompi-nginx
+    restart: unless-stopped
+    ports:
+      - "3443:443"  # Puerto HTTPS alternativo para evitar conflictos
+      - "3080:80"   # Puerto HTTP alternativo
+    volumes:
+      - ./nginx-pwa.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl-certs:/etc/nginx/certs:ro
+    depends_on:
+      - pogocompi
+    environment:
+      - NGINX_ENVSUBST_TEMPLATE_SUFFIX=.template
+      - DOMAIN=localhost
+    labels:
+      - "casaos.name=Pokémon GO HTTPS Proxy"
+      - "casaos.icon=https://raw.githubusercontent.com/4rgs/PoGoCompi/develop/public/icons/icon-192x192.png"
+      - "casaos.category=Network"
+      - "casaos.description=Proxy HTTPS para habilitar funciones PWA completas"
+      - "casaos.main=nginx-ssl"
+      - "casaos.scheme=https"
+      - "casaos.port_map=3443"
+      - "casaos.web_ui_port=3443"
+      - "casaos.web_ui_path=/"
+    networks:
+      - pogocompi-network
+    profiles:
+      - https  # Solo se inicia si se especifica el perfil
+
+  # Watchtower para auto-actualización
+  watchtower:
+    image: containrrr/watchtower:latest
+    container_name: pogocompi-watchtower
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - WATCHTOWER_CLEANUP=true
+      - WATCHTOWER_POLL_INTERVAL=21600  # 6 horas
+      - WATCHTOWER_INCLUDE_STOPPED=true
+      - WATCHTOWER_REVIVE_STOPPED=false
+      - WATCHTOWER_LABEL_ENABLE=true
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
+      - "casaos.name=Auto-actualizador"
+      - "casaos.category=Utilities"
+      - "casaos.description=Mantiene la aplicación actualizada automáticamente"
+    networks:
+      - pogocompi-network
+
+networks:
+  pogocompi-network:
+    driver: bridge
+    name: pogocompi-network
+
+# Configuración para generar certificados SSL automáticamente
+x-ssl-setup: &ssl-setup
+  # Para generar certificados auto-firmados:
+  # mkdir -p ssl-certs
+  # openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+  #   -keyout ssl-certs/localhost.key \
+  #   -out ssl-certs/localhost.crt \
+  #   -subj "/CN=localhost"

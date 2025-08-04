@@ -5,6 +5,7 @@ import PokemonForm from './components/PokemonForm';
 import ComparisonTable from './components/ComparisonTable';
 import DPSChart from './components/DPSChart';
 import PWAStatus from './components/PWAStatus';
+import PWAInstallPrompt from './components/PWAInstallPrompt';
 import AppFooter from './components/AppFooter';
 import pokemonDataService from './services/pokemonDataService';
 
@@ -176,7 +177,7 @@ function App() {
       try {
         console.log('🚀 Inicializando aplicación...');
         const result = await pokemonDataService.initializeData();
-        
+
         if (result.success) {
           const sourceText = result.source === 'api' ? 'PoGoAPI.net' : 'datos locales';
           console.log(`✅ Datos cargados desde ${sourceText}: ${result.count} Pokémon`);
@@ -220,7 +221,7 @@ function App() {
         dps: dpsResult.dps, // Mantiene compatibilidad con la estructura existente
         dpsMultiple: {
           short: dpsResult.dps.short,   // 10 segundos
-          medium: dpsResult.dps.medium, // 30 segundos  
+          medium: dpsResult.dps.medium, // 30 segundos
           long: dpsResult.dps.long      // 60 segundos
         },
         // Información de combate detallada para todas las ventanas
@@ -248,7 +249,7 @@ function App() {
       // Mostrar notificación de éxito con detalles del combate
       const combatInfo = dpsResult.combatDetails.short; // Usar ventana corta (10s) para la notificación
       showNotification(
-        `✅ ${uniqueName} agregado! DPS: ${dpsResult.dps.short?.toFixed(1)} | ${combatInfo.fastMoveCount}F + ${combatInfo.chargedMoveCount}C en 10s`, 
+        `✅ ${uniqueName} agregado! DPS: ${dpsResult.dps.short?.toFixed(1)} | ${combatInfo.fastMoveCount}F + ${combatInfo.chargedMoveCount}C en 10s`,
         'success'
       );
     } catch (error) {
@@ -265,9 +266,9 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Box sx={{ 
-        minHeight: '100vh', 
-        display: 'flex', 
+      <Box sx={{
+        minHeight: '100vh',
+        display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'flex-start',
@@ -287,9 +288,9 @@ function App() {
           zIndex: 0,
         }
       }}>
-        <Container 
-          maxWidth="xl" 
-          sx={{ 
+        <Container
+          maxWidth="xl"
+          sx={{
             width: '100%',
             maxWidth: { xs: '100%', sm: '600px', md: '900px', lg: '1200px', xl: '1400px' },
             mx: 'auto',
@@ -301,13 +302,13 @@ function App() {
           }}
         >
           <Box textAlign="center" mb={{ xs: 4, sm: 5, md: 6 }}>
-            <Typography 
-              variant="h3" 
-              component="h1" 
-              gutterBottom 
-              color="primary" 
+            <Typography
+              variant="h3"
+              component="h1"
+              gutterBottom
+              color="primary"
               fontWeight="bold"
-              sx={{ 
+              sx={{
                 fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem', lg: '3.5rem' },
                 mb: { xs: 2, sm: 3 },
                 background: 'linear-gradient(45deg, #60a5fa, #3b82f6, #10b981)',
@@ -320,10 +321,10 @@ function App() {
             >
               ⚡ Comparador de Pokémon GO ⚡
             </Typography>
-            <Typography 
-              variant="h6" 
+            <Typography
+              variant="h6"
               color="text.secondary"
-              sx={{ 
+              sx={{
                 fontSize: { xs: '1rem', sm: '1.1rem', md: '1.25rem', lg: '1.35rem' },
                 maxWidth: '700px',
                 mx: 'auto',
@@ -335,7 +336,7 @@ function App() {
               🎯 Analiza y compara el DPS de tus Pokémon favoritos con precisión profesional
             </Typography>
           </Box>
-          
+
           <Box sx={{ flex: 1 }}>
             <PokemonForm onAdd={handleAddPokemon} onShowMessage={showNotification} />
             <ComparisonTable pokemonList={pokemonList} onClear={handleClearList} />
@@ -350,18 +351,21 @@ function App() {
       {/* PWA Status - Botones de instalación y gestión de cache */}
       <PWAStatus onCacheApiData={showNotification} />
 
+      {/* PWA Install Prompt - Prompt inteligente de instalación */}
+      <PWAInstallPrompt />
+
       {/* Notificaciones */}
-      <Snackbar 
-        open={snackbar.open} 
-        autoHideDuration={4000} 
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={4000}
         onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       >
-        <Alert 
-          onClose={() => setSnackbar(prev => ({ ...prev, open: false }))} 
+        <Alert
+          onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}
           severity={snackbar.severity}
           variant="filled"
-          sx={{ 
+          sx={{
             width: '100%',
             borderRadius: 2,
             fontWeight: 600,
