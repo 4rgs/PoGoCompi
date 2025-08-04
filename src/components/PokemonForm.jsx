@@ -9,7 +9,8 @@ import {
   Button,
   Typography,
   CircularProgress,
-  Alert
+  Alert,
+  Box
 } from '@mui/material';
 import { Add as AddIcon, CatchingPokemon as PokemonIcon, Refresh as RefreshIcon } from '@mui/icons-material';
 import pokemonDataService from '../services/pokemonDataService';
@@ -157,7 +158,23 @@ function PokemonForm({ onAdd, onShowMessage }) {
   // Mostrar loading state completo durante la inicialización
   if (loading && !dataReady) {
     return (
-      <div className="w-full max-w-none mx-auto mb-6 p-6 bg-gradient-to-br from-slate-800/80 to-slate-900/90 backdrop-blur-lg border border-blue-500/20 rounded-2xl text-center min-h-[300px] flex flex-col justify-center items-center">
+      <Paper 
+        elevation={3} 
+        sx={{ 
+          p: { xs: 3, sm: 4, md: 5 }, 
+          textAlign: 'center',
+          mx: 'auto',
+          maxWidth: { xs: '100%', sm: '600px' },
+          background: 'linear-gradient(145deg, rgba(30, 41, 59, 0.6), rgba(15, 23, 42, 0.8))',
+          backdropFilter: 'blur(10px)',
+          border: '1px solid rgba(59, 130, 246, 0.1)',
+          minHeight: '300px',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}
+      >
         <CircularProgress size={60} sx={{ mb: 3, color: 'primary.main' }} />
         <Typography variant="h6" color="primary" sx={{ mb: 2 }}>
           🎯 Inicializando Comparador de Pokémon
@@ -168,35 +185,68 @@ function PokemonForm({ onAdd, onShowMessage }) {
         <Typography variant="caption" color="text.secondary">
           Esto puede tomar unos segundos la primera vez
         </Typography>
-      </div>
+      </Paper>
     );
   }
 
   return (
-    <div className="w-full max-w-none mx-auto mb-6 p-6 bg-gradient-to-br from-slate-800/80 to-slate-900/90 backdrop-blur-lg border border-blue-500/20 rounded-2xl">
+    <Paper 
+      elevation={3} 
+      sx={{ 
+        p: { xs: 3, sm: 4, md: 5 }, 
+        mx: 'auto',
+        maxWidth: { xs: '100%', sm: '600px' },
+        background: 'linear-gradient(145deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.9))',
+        backdropFilter: 'blur(10px)',
+        border: '1px solid rgba(59, 130, 246, 0.2)',
+      }}
+    >
       {/* Header */}
-      <div className="text-center mb-6 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4">
-        <PokemonIcon className="text-blue-500 text-3xl" />
-        <h2 className="text-2xl font-bold text-blue-500">
+      <Box sx={{ 
+        display: 'flex', 
+        flexDirection: { xs: 'column', sm: 'row' },
+        alignItems: 'center', 
+        justifyContent: 'center', 
+        gap: { xs: 2, sm: 4 },
+        mb: { xs: 3, sm: 4 }
+      }}>
+        <PokemonIcon sx={{ 
+          fontSize: { xs: 32, sm: 36 }, 
+          color: 'primary.main',
+          filter: 'drop-shadow(0 2px 4px rgba(59, 130, 246, 0.3))'
+        }} />
+        <Typography 
+          variant="h5" 
+          color="primary.main" 
+          sx={{ 
+            fontWeight: 700,
+            fontSize: { xs: '1.4rem', sm: '1.5rem' },
+            textAlign: 'center'
+          }}
+        >
           🎯 Agregar Pokémon v2.0
-        </h2>
+        </Typography>
         <Button
           variant="outlined"
           size="small"
           startIcon={loading && dataReady ? <CircularProgress size={16} /> : <RefreshIcon />}
           onClick={handleRefresh}
           disabled={loading}
-          className="sm:ml-auto mt-2 sm:mt-0"
+          sx={{ 
+            ml: { sm: 'auto' }, 
+            mt: { xs: 0, sm: 0 },
+            minWidth: 'fit-content'
+          }}
         >
           {loading && dataReady ? 'Actualizando...' : 'Actualizar'}
         </Button>
-      </div>
+      </Box>
 
       {/* Error Alert */}
       {error && (
         <Alert
           severity="error"
-          className="mb-6"
+          sx={{ mb: 3 }}
           action={
             <Button
               color="inherit"
@@ -214,165 +264,161 @@ function PokemonForm({ onAdd, onShowMessage }) {
 
       {/* Info Alert */}
       {!error && !dataReady && !loading && (
-        <Alert severity="info" className="mb-6">
+        <Alert severity="info" sx={{ mb: 3 }}>
           No hay datos de Pokémon disponibles. Intenta actualizar los datos.
         </Alert>
       )}
 
       {/* Form */}
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
         {/* Pokémon Select - Full Width */}
-        <div className="w-full">
-          <FormControl fullWidth required disabled={!dataReady}>
-            <InputLabel>Pokémon</InputLabel>
-            <Select
-              name="name"
-              value={form.name}
-              onChange={handleChange}
-              label="Pokémon"
-              startAdornment={
-                !dataReady ? (
-                  <div className="flex items-center pl-2">
-                    <CircularProgress size={16} />
-                  </div>
-                ) : null
-              }
-            >
-              {dataReady ? (
-                pokemonData.map((p, index) => (
-                  <MenuItem key={(p.id || p.name)+index+ ''} value={p.name}>{p.name}</MenuItem>
-                ))
-              ) : (
-                <MenuItem value="">Cargando Pokémon...</MenuItem>
-              )}
-            </Select>
-          </FormControl>
+        <FormControl fullWidth required disabled={!dataReady}>
+          <InputLabel>Pokémon</InputLabel>
+          <Select
+            name="name"
+            value={form.name}
+            onChange={handleChange}
+            label="Pokémon"
+            startAdornment={
+              !dataReady ? (
+                <Box sx={{ display: 'flex', alignItems: 'center', pl: 2 }}>
+                  <CircularProgress size={16} />
+                </Box>
+              ) : null
+            }
+          >
+            {dataReady ? (
+              pokemonData.map((p, index) => (
+                <MenuItem key={(p.id || p.name)+index+ ''} value={p.name}>{p.name}</MenuItem>
+              ))
+            ) : (
+              <MenuItem value="">Cargando Pokémon...</MenuItem>
+            )}
+          </Select>
           {!dataReady && (
-            <p className="text-sm text-slate-400 mt-2 text-center italic">
+            <Typography variant="caption" color="text.secondary" sx={{ mt: 1, textAlign: 'center', fontStyle: 'italic' }}>
               ⏳ Cargando datos de Pokémon...
-            </p>
+            </Typography>
           )}
           {dataReady && !form.name && (
-            <p className="text-sm text-slate-400 mt-2 text-center italic">
+            <Typography variant="caption" color="text.secondary" sx={{ mt: 1, textAlign: 'center', fontStyle: 'italic' }}>
               💡 Selecciona un Pokémon para habilitar los campos de movimientos
-            </p>
+            </Typography>
           )}
-        </div>
+        </FormControl>
 
         {/* Level - Full Width */}
-        <div className="w-full">
-          <TextField
-            name="level"
-            type="number"
-            label="Nivel"
-            value={form.level}
-            onChange={handleChange}
-            inputProps={{ min: 1, max: 50 }}
-            fullWidth
-            required
-            disabled={!dataReady}
-            InputProps={{
-              startAdornment: !dataReady ? (
-                <div className="flex items-center pr-2">
-                  <CircularProgress size={16} />
-                </div>
-              ) : null
-            }}
-          />
-        </div>
+        <TextField
+          name="level"
+          type="number"
+          label="Nivel"
+          value={form.level}
+          onChange={handleChange}
+          inputProps={{ min: 1, max: 50 }}
+          fullWidth
+          required
+          disabled={!dataReady}
+          InputProps={{
+            startAdornment: !dataReady ? (
+              <Box sx={{ display: 'flex', alignItems: 'center', pr: 2 }}>
+                <CircularProgress size={16} />
+              </Box>
+            ) : null
+          }}
+        />
 
         {/* IV Attack - Full Width */}
-        <div className="w-full">
-          <TextField
-            name="ivAttack"
-            type="number"
-            label="IV Ataque"
-            value={form.ivAttack}
-            onChange={handleChange}
-            inputProps={{ min: 0, max: 15 }}
-            fullWidth
-            required
-            disabled={!dataReady}
-            InputProps={{
-              startAdornment: !dataReady ? (
-                <div className="flex items-center pr-2">
-                  <CircularProgress size={16} />
-                </div>
-              ) : null
-            }}
-          />
-        </div>
+        <TextField
+          name="ivAttack"
+          type="number"
+          label="IV Ataque"
+          value={form.ivAttack}
+          onChange={handleChange}
+          inputProps={{ min: 0, max: 15 }}
+          fullWidth
+          required
+          disabled={!dataReady}
+          InputProps={{
+            startAdornment: !dataReady ? (
+              <Box sx={{ display: 'flex', alignItems: 'center', pr: 2 }}>
+                <CircularProgress size={16} />
+              </Box>
+            ) : null
+          }}
+        />
 
         {/* Fast Move - Full Width */}
-        <div className="w-full">
-          <FormControl fullWidth required disabled={!selected || !dataReady}>
-            <InputLabel>Ataque Rápido</InputLabel>
-            <Select
-              name="fastMove"
-              value={form.fastMove}
-              onChange={handleChange}
-              label="Ataque Rápido"
-              startAdornment={
-                !dataReady ? (
-                  <div className="flex items-center pl-2">
-                    <CircularProgress size={16} />
-                  </div>
-                ) : null
-              }
-            >
-              {!dataReady ? (
-                <MenuItem value="">Cargando movimientos...</MenuItem>
-              ) : selected ? (
-                selected.fastMoves.map(m => (
-                  <MenuItem key={m.name} value={m.name}>{m.name}</MenuItem>
-                ))
-              ) : (
-                <MenuItem value="">Selecciona un Pokémon primero</MenuItem>
-              )}
-            </Select>
-          </FormControl>
-        </div>
+        <FormControl fullWidth required disabled={!selected || !dataReady}>
+          <InputLabel>Ataque Rápido</InputLabel>
+          <Select
+            name="fastMove"
+            value={form.fastMove}
+            onChange={handleChange}
+            label="Ataque Rápido"
+            startAdornment={
+              !dataReady ? (
+                <Box sx={{ display: 'flex', alignItems: 'center', pl: 2 }}>
+                  <CircularProgress size={16} />
+                </Box>
+              ) : null
+            }
+          >
+            {!dataReady ? (
+              <MenuItem value="">Cargando movimientos...</MenuItem>
+            ) : selected ? (
+              selected.fastMoves.map(m => (
+                <MenuItem key={m.name} value={m.name}>{m.name}</MenuItem>
+              ))
+            ) : (
+              <MenuItem value="">Selecciona un Pokémon primero</MenuItem>
+            )}
+          </Select>
+        </FormControl>
 
         {/* Charged Move - Full Width */}
-        <div className="w-full">
-          <FormControl fullWidth required disabled={!selected || !dataReady}>
-            <InputLabel>Ataque Cargado</InputLabel>
-            <Select
-              name="chargedMove"
-              value={form.chargedMove}
-              onChange={handleChange}
-              label="Ataque Cargado"
-              startAdornment={
-                !dataReady ? (
-                  <div className="flex items-center pl-2">
-                    <CircularProgress size={16} />
-                  </div>
-                ) : null
-              }
-            >
-              {!dataReady ? (
-                <MenuItem value="">Cargando movimientos...</MenuItem>
-              ) : selected ? (
-                selected.chargedMoves.map(m => (
-                  <MenuItem key={m.name} value={m.name}>{m.name}</MenuItem>
-                ))
-              ) : (
-                <MenuItem value="">Selecciona un Pokémon primero</MenuItem>
-              )}
-            </Select>
-          </FormControl>
-        </div>
+        <FormControl fullWidth required disabled={!selected || !dataReady}>
+          <InputLabel>Ataque Cargado</InputLabel>
+          <Select
+            name="chargedMove"
+            value={form.chargedMove}
+            onChange={handleChange}
+            label="Ataque Cargado"
+            startAdornment={
+              !dataReady ? (
+                <Box sx={{ display: 'flex', alignItems: 'center', pl: 2 }}>
+                  <CircularProgress size={16} />
+                </Box>
+              ) : null
+            }
+          >
+            {!dataReady ? (
+              <MenuItem value="">Cargando movimientos...</MenuItem>
+            ) : selected ? (
+              selected.chargedMoves.map(m => (
+                <MenuItem key={m.name} value={m.name}>{m.name}</MenuItem>
+              ))
+            ) : (
+              <MenuItem value="">Selecciona un Pokémon primero</MenuItem>
+            )}
+          </Select>
+        </FormControl>
 
         {/* Submit Button - Full Width */}
-        <div className="w-full flex justify-center pt-4">
+        <Box sx={{ display: 'flex', justifyContent: 'center', pt: 2 }}>
           <Button
             type="submit"
             variant="contained"
             size="large"
             startIcon={!dataReady ? <CircularProgress size={20} /> : <AddIcon />}
             disabled={!dataReady || !form.name || !form.fastMove || !form.chargedMove}
-            className="w-full max-w-md py-3 px-6 text-lg font-semibold rounded-xl"
             sx={{
+              width: '100%',
+              maxWidth: '400px',
+              py: 1.5,
+              px: 3,
+              fontSize: '1.1rem',
+              fontWeight: 600,
+              borderRadius: 3,
               background: 'linear-gradient(45deg, #3b82f6, #1d4ed8)',
               '&:hover:not(:disabled)': {
                 background: 'linear-gradient(45deg, #2563eb, #1e40af)',
@@ -388,9 +434,9 @@ function PokemonForm({ onAdd, onShowMessage }) {
           >
             {!dataReady ? '⏳ Cargando...' : '⚡ Agregar Pokémon'}
           </Button>
-        </div>
-      </form>
-    </div>
+        </Box>
+      </Box>
+    </Paper>
   );
 }
 

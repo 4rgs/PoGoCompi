@@ -67,7 +67,6 @@ function DPSChart({ pokemonList }) {
       <Paper 
         elevation={3} 
         sx={{ 
-          mt: { xs: 3, sm: 4 }, 
           p: { xs: 3, sm: 4, md: 5 }, 
           textAlign: 'center',
           mx: 'auto',
@@ -408,7 +407,6 @@ function DPSChart({ pokemonList }) {
     <Paper 
       elevation={3} 
       sx={{ 
-        mt: { xs: 3, sm: 4 }, 
         p: { xs: 2, sm: 3, md: 4 }, 
         mx: 'auto', 
         width: '100%',

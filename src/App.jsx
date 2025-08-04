@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-import { CssBaseline, Snackbar, Alert } from '@mui/material';
+import { CssBaseline, Snackbar, Alert, Grid, Container } from '@mui/material';
 import PokemonForm from './components/PokemonForm';
 import ComparisonTable from './components/ComparisonTable';
 import DPSChart from './components/DPSChart';
@@ -266,12 +266,13 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <div className="min-h-screen flex flex-col items-stretch justify-start py-4 md:py-6 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 relative">
+      <div className="min-h-screen flex flex-col items-center justify-start py-4 md:py-6 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 relative">
         {/* Background gradients */}
         <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-transparent to-emerald-500/10 pointer-events-none"></div>
 
-        <div className="w-full max-w-none mx-auto px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 relative z-10 flex-1 flex flex-col items-center">
-          <div className="text-center mb-8 md:mb-12">
+        <Container maxWidth="xl" sx={{ position: 'relative', zIndex: 10, flex: 1, display: 'flex', flexDirection: 'column' }}>
+          {/* Header */}
+          <div className="text-center mb-8 md:mb-12 w-full">
             <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-4 sm:mb-6 bg-gradient-to-r from-blue-400 via-blue-500 to-emerald-400 bg-clip-text text-transparent filter drop-shadow-lg">
               ⚡ Comparador de Pokémon GO ⚡
             </h1>
@@ -280,12 +281,24 @@ function App() {
             </p>
           </div>
 
-          <div className="flex-1 w-full mx-auto">
-            <PokemonForm onAdd={handleAddPokemon} onShowMessage={showNotification} />
-            <ComparisonTable pokemonList={pokemonList} onClear={handleClearList} />
-            <DPSChart pokemonList={pokemonList} />
-          </div>
-        </div>
+          {/* Main Content - Dynamic Grid Layout */}
+          <Grid container spacing={3} sx={{ flex: 1, alignItems: 'flex-start' }}>
+            {/* Form Card - Always first on mobile, flexible on desktop */}
+            <Grid item xs={12} lg={6} xl={4}>
+              <PokemonForm onAdd={handleAddPokemon} onShowMessage={showNotification} />
+            </Grid>
+            
+            {/* Table Card - Responsive sizing */}
+            <Grid item xs={12} lg={6} xl={8}>
+              <ComparisonTable pokemonList={pokemonList} onClear={handleClearList} />
+            </Grid>
+            
+            {/* Chart Card - Full width on small screens, responsive on larger */}
+            <Grid item xs={12} xl={12}>
+              <DPSChart pokemonList={pokemonList} />
+            </Grid>
+          </Grid>
+        </Container>
 
         {/* Footer con información de versión */}
         <AppFooter />

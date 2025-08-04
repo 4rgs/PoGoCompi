@@ -26,7 +26,6 @@ function ComparisonTable({ pokemonList, onClear }) {
       <Paper 
         elevation={3} 
         sx={{ 
-          mt: { xs: 3, sm: 4 }, 
           p: { xs: 3, sm: 4, md: 5 }, 
           textAlign: 'center',
           mx: 'auto',
@@ -83,7 +82,6 @@ function ComparisonTable({ pokemonList, onClear }) {
     <Paper 
       elevation={3} 
       sx={{ 
-        mt: { xs: 3, sm: 4 }, 
         overflow: 'hidden', 
         mx: 'auto', 
         width: '100%',
