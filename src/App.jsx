@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-import { CssBaseline, Snackbar, Alert, Grid, Container } from '@mui/material';
+import { CssBaseline, Snackbar, Alert, Grid, Container, Box } from '@mui/material';
 import PokemonForm from './components/PokemonForm';
 import ComparisonTable from './components/ComparisonTable';
 import DPSChart from './components/DPSChart';
@@ -281,20 +281,27 @@ function App() {
             </p>
           </div>
 
-          {/* Main Content - Dynamic Grid Layout */}
-          <Grid container spacing={3} sx={{ flex: 1, alignItems: 'flex-start' }}>
-            {/* Form Card - Always first on mobile, flexible on desktop */}
-            <Grid item xs={12} lg={6} xl={4}>
-              <PokemonForm onAdd={handleAddPokemon} onShowMessage={showNotification} />
+          {/* Main Content - Flex Row Layout */}
+          <Grid container spacing={3} sx={{ flex: 1 }}>
+            {/* Top Row: Form + Table */}
+            <Grid item xs={12} sx={{ display: 'flex', flexDirection: { xs: 'column', lg: 'row' }, gap: 3 }}>
+              {/* Form Card - Left side */}
+              <Box sx={{ 
+                flex: { xs: '1 1 100%', lg: '0 0 auto' }, 
+                minWidth: { lg: '400px' },
+                maxWidth: { lg: '500px' }
+              }}>
+                <PokemonForm onAdd={handleAddPokemon} onShowMessage={showNotification} />
+              </Box>
+              
+              {/* Table Card - Right side, takes remaining space */}
+              <Box sx={{ flex: '1 1 auto' }}>
+                <ComparisonTable pokemonList={pokemonList} onClear={handleClearList} />
+              </Box>
             </Grid>
             
-            {/* Table Card - Responsive sizing */}
-            <Grid item xs={12} lg={6} xl={8}>
-              <ComparisonTable pokemonList={pokemonList} onClear={handleClearList} />
-            </Grid>
-            
-            {/* Chart Card - Full width on small screens, responsive on larger */}
-            <Grid item xs={12} xl={12}>
+            {/* Bottom Row: Chart - Full width */}
+            <Grid item xs={12}>
               <DPSChart pokemonList={pokemonList} />
             </Grid>
           </Grid>

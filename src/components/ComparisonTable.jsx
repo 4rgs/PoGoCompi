@@ -23,10 +23,10 @@ function ComparisonTable({ pokemonList, onClear }) {
 
   if (pokemonList.length === 0) {
     return (
-      <Paper 
-        elevation={3} 
-        sx={{ 
-          p: { xs: 3, sm: 4, md: 5 }, 
+      <Paper
+        elevation={3}
+        sx={{
+          p: { xs: 3, sm: 4, md: 5 },
           textAlign: 'center',
           mx: 'auto',
           maxWidth: { xs: '100%', sm: '600px' },
@@ -35,34 +35,34 @@ function ComparisonTable({ pokemonList, onClear }) {
           border: '1px solid rgba(59, 130, 246, 0.1)',
         }}
       >
-        <Box sx={{ 
-          display: 'flex', 
-          flexDirection: 'column', 
+        <Box sx={{
+          display: 'flex',
+          flexDirection: 'column',
           alignItems: 'center',
           gap: { xs: 2, sm: 3 }
         }}>
-          <PokemonIcon sx={{ 
-            fontSize: { xs: 56, sm: 72, md: 80 }, 
+          <PokemonIcon sx={{
+            fontSize: { xs: 56, sm: 72, md: 80 },
             color: 'text.disabled',
             opacity: 0.6,
             filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.3))'
           }} />
           <Box>
-            <Typography 
-              variant="h6" 
-              color="text.secondary" 
-              gutterBottom 
-              sx={{ 
+            <Typography
+              variant="h6"
+              color="text.secondary"
+              gutterBottom
+              sx={{
                 fontSize: { xs: '1.1rem', sm: '1.25rem', md: '1.4rem' },
                 fontWeight: 600
               }}
             >
               🎯 No hay Pokémon para comparar
             </Typography>
-            <Typography 
-              variant="body2" 
-              color="text.secondary" 
-              sx={{ 
+            <Typography
+              variant="body2"
+              color="text.secondary"
+              sx={{
                 fontSize: { xs: '0.9rem', sm: '1rem' },
                 opacity: 0.8,
                 maxWidth: '400px',
@@ -79,34 +79,34 @@ function ComparisonTable({ pokemonList, onClear }) {
   }
 
   return (
-    <Paper 
-      elevation={3} 
-      sx={{ 
-        overflow: 'hidden', 
-        mx: 'auto', 
+    <Paper
+      elevation={3}
+      sx={{
+        overflow: 'hidden',
+        mx: 'auto',
         width: '100%',
         background: 'linear-gradient(145deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.9))',
         backdropFilter: 'blur(10px)',
         border: '1px solid rgba(59, 130, 246, 0.2)',
       }}
     >
-      <Box sx={{ 
-        p: { xs: 2, sm: 3, md: 4 }, 
-        pb: 2, 
-        display: 'flex', 
-        justifyContent: 'space-between', 
+      <Box sx={{
+        p: { xs: 2, sm: 3, md: 4 },
+        pb: 2,
+        display: 'flex',
+        justifyContent: 'space-between',
         alignItems: 'center',
         flexDirection: { xs: 'column', sm: 'row' },
         gap: { xs: 2, sm: 0 }
       }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           <SpeedIcon sx={{ color: 'primary.main', fontSize: { xs: '1.5rem', sm: '1.75rem' } }} />
-          <Typography 
-            variant="h5" 
-            component="h2" 
-            color="primary" 
+          <Typography
+            variant="h5"
+            component="h2"
+            color="primary"
             fontWeight="bold"
-            sx={{ 
+            sx={{
               fontSize: { xs: '1.25rem', sm: '1.5rem', md: '1.75rem' },
               textAlign: { xs: 'center', sm: 'left' }
             }}
@@ -121,7 +121,7 @@ function ComparisonTable({ pokemonList, onClear }) {
             startIcon={<ClearIcon />}
             onClick={onClear}
             size="small"
-            sx={{ 
+            sx={{
               fontSize: { xs: '0.8rem', sm: '0.875rem' },
               px: { xs: 2, sm: 3 },
               borderRadius: 2,
@@ -135,13 +135,13 @@ function ComparisonTable({ pokemonList, onClear }) {
           </Button>
         )}
       </Box>
-      
+
       <TableContainer sx={{ overflowX: 'auto' }}>
         <Table stickyHeader sx={{ minWidth: { xs: 800, sm: 'auto' } }}>
           <TableHead>
             <TableRow>
-              <TableCell sx={{ 
-                fontWeight: 'bold', 
+              <TableCell sx={{
+                fontWeight: 'bold',
                 backgroundColor: 'primary.dark',
                 fontSize: { xs: '0.8rem', sm: '0.875rem' },
                 px: { xs: 1, sm: 2 },
@@ -149,40 +149,40 @@ function ComparisonTable({ pokemonList, onClear }) {
               }}>
                 Imagen
               </TableCell>
-              <TableCell sx={{ 
-                fontWeight: 'bold', 
+              <TableCell sx={{
+                fontWeight: 'bold',
                 backgroundColor: 'primary.dark',
                 fontSize: { xs: '0.8rem', sm: '0.875rem' },
                 px: { xs: 1, sm: 2 }
               }}>
                 Pokémon
               </TableCell>
-              <TableCell align="center" sx={{ 
-                fontWeight: 'bold', 
+              <TableCell align="center" sx={{
+                fontWeight: 'bold',
                 backgroundColor: 'primary.dark',
                 fontSize: { xs: '0.8rem', sm: '0.875rem' },
                 px: { xs: 1, sm: 2 }
               }}>
                 Tipos
               </TableCell>
-              <TableCell align="center" sx={{ 
-                fontWeight: 'bold', 
+              <TableCell align="center" sx={{
+                fontWeight: 'bold',
                 backgroundColor: 'primary.dark',
                 fontSize: { xs: '0.8rem', sm: '0.875rem' },
                 px: { xs: 1, sm: 2 }
               }}>
                 Nivel
               </TableCell>
-              <TableCell align="center" sx={{ 
-                fontWeight: 'bold', 
+              <TableCell align="center" sx={{
+                fontWeight: 'bold',
                 backgroundColor: 'primary.dark',
                 fontSize: { xs: '0.8rem', sm: '0.875rem' },
                 px: { xs: 1, sm: 2 }
               }}>
                 IV ATK
               </TableCell>
-              <TableCell align="center" sx={{ 
-                fontWeight: 'bold', 
+              <TableCell align="center" sx={{
+                fontWeight: 'bold',
                 backgroundColor: 'primary.dark',
                 fontSize: { xs: '0.8rem', sm: '0.875rem' },
                 px: { xs: 1, sm: 2 },
@@ -190,8 +190,8 @@ function ComparisonTable({ pokemonList, onClear }) {
               }}>
                 Ataque Base
               </TableCell>
-              <TableCell align="center" sx={{ 
-                fontWeight: 'bold', 
+              <TableCell align="center" sx={{
+                fontWeight: 'bold',
                 backgroundColor: 'primary.dark',
                 fontSize: { xs: '0.8rem', sm: '0.875rem' },
                 px: { xs: 1, sm: 2 },
@@ -199,16 +199,16 @@ function ComparisonTable({ pokemonList, onClear }) {
               }}>
                 Mov. Rápido
               </TableCell>
-              <TableCell align="center" sx={{ 
-                fontWeight: 'bold', 
+              <TableCell align="center" sx={{
+                fontWeight: 'bold',
                 backgroundColor: 'primary.dark',
                 fontSize: { xs: '0.8rem', sm: '0.875rem' },
                 px: { xs: 1, sm: 2 }
               }}>
                 Mov. Cargado
               </TableCell>
-              <TableCell align="center" sx={{ 
-                fontWeight: 'bold', 
+              <TableCell align="center" sx={{
+                fontWeight: 'bold',
                 backgroundColor: 'primary.dark',
                 fontSize: { xs: '0.8rem', sm: '0.875rem' },
                 px: { xs: 1, sm: 2 },
@@ -216,8 +216,8 @@ function ComparisonTable({ pokemonList, onClear }) {
               }}>
                 Detalles Ataque
               </TableCell>
-              <TableCell align="center" sx={{ 
-                fontWeight: 'bold', 
+              <TableCell align="center" sx={{
+                fontWeight: 'bold',
                 backgroundColor: 'primary.dark',
                 fontSize: { xs: '0.8rem', sm: '0.875rem' },
                 px: { xs: 1, sm: 2 }
@@ -236,8 +236,8 @@ function ComparisonTable({ pokemonList, onClear }) {
                   </Box>
                 </Box>
               </TableCell>
-              <TableCell align="center" sx={{ 
-                fontWeight: 'bold', 
+              <TableCell align="center" sx={{
+                fontWeight: 'bold',
                 backgroundColor: 'primary.dark',
                 fontSize: { xs: '0.8rem', sm: '0.875rem' },
                 px: { xs: 1, sm: 2 },
@@ -249,10 +249,10 @@ function ComparisonTable({ pokemonList, onClear }) {
           </TableHead>
           <TableBody>
             {sortedPokemonList.map((p, i) => (
-              <TableRow 
-                key={i} 
+              <TableRow
+                key={i}
                 hover
-                sx={{ 
+                sx={{
                   '&:nth-of-type(odd)': { backgroundColor: 'rgba(0,0,0,0.1)' },
                   transition: 'all 0.2s ease-in-out',
                   ...getTypeBackground(p.types),
@@ -264,13 +264,13 @@ function ComparisonTable({ pokemonList, onClear }) {
                   }
                 }}
               >
-                <TableCell align="center" sx={{ 
+                <TableCell align="center" sx={{
                   px: { xs: 1, sm: 2 },
                   py: 1
                 }}>
                   <PokemonImage pokemon={p} />
                 </TableCell>
-                <TableCell component="th" scope="row" sx={{ 
+                <TableCell component="th" scope="row" sx={{
                   fontWeight: 'bold',
                   fontSize: { xs: '0.8rem', sm: '0.875rem' },
                   px: { xs: 1, sm: 2 },
@@ -282,7 +282,7 @@ function ComparisonTable({ pokemonList, onClear }) {
                 <TableCell align="center" sx={{ px: { xs: 1, sm: 2 } }}>
                   <TypeChips types={p.types} size="small" />
                 </TableCell>
-                <TableCell align="center" sx={{ 
+                <TableCell align="center" sx={{
                   fontSize: { xs: '0.8rem', sm: '0.875rem' },
                   px: { xs: 1, sm: 2 },
                   color: 'white',
@@ -291,12 +291,12 @@ function ComparisonTable({ pokemonList, onClear }) {
                   {p.level}
                 </TableCell>
                 <TableCell align="center" sx={{ px: { xs: 1, sm: 2 } }}>
-                  <Chip 
-                    label={p.ivAttack} 
-                    size="small" 
+                  <Chip
+                    label={p.ivAttack}
+                    size="small"
                     color={p.ivAttack === 15 ? 'success' : p.ivAttack >= 10 ? 'warning' : 'default'}
                     icon={<StarIcon />}
-                    sx={{ 
+                    sx={{
                       fontSize: { xs: '0.7rem', sm: '0.75rem' },
                       backgroundColor: p.ivAttack === 15 ? '#4caf50' : p.ivAttack >= 10 ? '#ff9800' : '#757575',
                       color: 'white',
@@ -304,7 +304,7 @@ function ComparisonTable({ pokemonList, onClear }) {
                     }}
                   />
                 </TableCell>
-                <TableCell align="center" sx={{ 
+                <TableCell align="center" sx={{
                   fontSize: { xs: '0.8rem', sm: '0.875rem' },
                   px: { xs: 1, sm: 2 },
                   display: { xs: 'none', md: 'table-cell' },
@@ -314,19 +314,19 @@ function ComparisonTable({ pokemonList, onClear }) {
                 }}>
                   {p.baseAttack}
                 </TableCell>
-                <TableCell align="center" sx={{ 
+                <TableCell align="center" sx={{
                   px: { xs: 1, sm: 2 },
                   display: { xs: 'none', md: 'table-cell' }
                 }}>
                   {p.fastMoveData ? (
-                    <MoveBadge 
-                      move={p.fastMoveData} 
+                    <MoveBadge
+                      move={p.fastMoveData}
                       isChargedMove={false}
                       size="small"
                       showDetails={true}
                     />
                   ) : (
-                    <Typography variant="caption" sx={{ 
+                    <Typography variant="caption" sx={{
                       fontSize: '0.75rem',
                       color: 'white',
                       textShadow: '1px 1px 2px rgba(0,0,0,0.7)',
@@ -336,19 +336,19 @@ function ComparisonTable({ pokemonList, onClear }) {
                     </Typography>
                   )}
                 </TableCell>
-                <TableCell align="center" sx={{ 
+                <TableCell align="center" sx={{
                   px: { xs: 1, sm: 2 }
                 }}>
                   <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0.5 }}>
                     {p.chargedMoveData ? (
-                      <MoveBadge 
-                        move={p.chargedMoveData} 
+                      <MoveBadge
+                        move={p.chargedMoveData}
                         isChargedMove={true}
                         size="small"
                         showDetails={true}
                       />
                     ) : (
-                      <Typography variant="caption" sx={{ 
+                      <Typography variant="caption" sx={{
                         fontSize: '0.75rem',
                         color: 'white',
                         textShadow: '1px 1px 2px rgba(0,0,0,0.7)',
@@ -358,11 +358,11 @@ function ComparisonTable({ pokemonList, onClear }) {
                       </Typography>
                     )}
                     {p.stab && (
-                      <Chip 
-                        label="STAB" 
+                      <Chip
+                        label="STAB"
                         size="small"
-                        sx={{ 
-                          fontSize: '0.6rem', 
+                        sx={{
+                          fontSize: '0.6rem',
                           height: '16px',
                           backgroundColor: '#4caf50',
                           color: 'white',
@@ -373,7 +373,7 @@ function ComparisonTable({ pokemonList, onClear }) {
                     )}
                   </Box>
                 </TableCell>
-                <TableCell align="center" sx={{ 
+                <TableCell align="center" sx={{
                   fontSize: { xs: '0.7rem', sm: '0.75rem' },
                   px: { xs: 1, sm: 2 },
                   display: { xs: 'none', lg: 'table-cell' },
@@ -396,11 +396,11 @@ function ComparisonTable({ pokemonList, onClear }) {
                   <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0.5 }}>
                     {/* DPS para múltiples ventanas de tiempo */}
                     <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap', justifyContent: 'center' }}>
-                      <Chip 
+                      <Chip
                         label={`${typeof p.dps === 'object' ? p.dps.short : p.dps}`}
                         variant="filled"
                         size="small"
-                        sx={{ 
+                        sx={{
                           fontWeight: 'bold',
                           fontSize: '0.65rem',
                           backgroundColor: '#ef4444',
@@ -410,11 +410,11 @@ function ComparisonTable({ pokemonList, onClear }) {
                       />
                       {typeof p.dps === 'object' && (
                         <>
-                          <Chip 
+                          <Chip
                             label={p.dps.medium}
                             variant="filled"
                             size="small"
-                            sx={{ 
+                            sx={{
                               fontWeight: 'bold',
                               fontSize: '0.65rem',
                               backgroundColor: '#f59e0b',
@@ -422,11 +422,11 @@ function ComparisonTable({ pokemonList, onClear }) {
                               minWidth: '45px'
                             }}
                           />
-                          <Chip 
+                          <Chip
                             label={p.dps.long}
                             variant="filled"
                             size="small"
-                            sx={{ 
+                            sx={{
                               fontWeight: 'bold',
                               fontSize: '0.65rem',
                               backgroundColor: '#10b981',
@@ -450,7 +450,7 @@ function ComparisonTable({ pokemonList, onClear }) {
                   </Box>
                 </TableCell>
                 {/* Nueva columna de análisis avanzado */}
-                <TableCell align="center" sx={{ 
+                <TableCell align="center" sx={{
                   fontSize: { xs: '0.7rem', sm: '0.75rem' },
                   px: { xs: 1, sm: 2 },
                   display: { xs: 'none', xl: 'table-cell' },

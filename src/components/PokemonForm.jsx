@@ -14,6 +14,7 @@ import {
 } from '@mui/material';
 import { Add as AddIcon, CatchingPokemon as PokemonIcon, Refresh as RefreshIcon } from '@mui/icons-material';
 import pokemonDataService from '../services/pokemonDataService';
+import SearchableSelect from './SearchableSelect';
 
 function PokemonForm({ onAdd, onShowMessage }) {
   const [pokemonData, setPokemonData] = useState([]);
@@ -158,10 +159,10 @@ function PokemonForm({ onAdd, onShowMessage }) {
   // Mostrar loading state completo durante la inicialización
   if (loading && !dataReady) {
     return (
-      <Paper 
-        elevation={3} 
-        sx={{ 
-          p: { xs: 3, sm: 4, md: 5 }, 
+      <Paper
+        elevation={3}
+        sx={{
+          p: { xs: 3, sm: 4, md: 5 },
           textAlign: 'center',
           mx: 'auto',
           maxWidth: { xs: '100%', sm: '600px' },
@@ -190,10 +191,10 @@ function PokemonForm({ onAdd, onShowMessage }) {
   }
 
   return (
-    <Paper 
-      elevation={3} 
-      sx={{ 
-        p: { xs: 3, sm: 4, md: 5 }, 
+    <Paper
+      elevation={3}
+      sx={{
+        p: { xs: 3, sm: 4, md: 5 },
         mx: 'auto',
         maxWidth: { xs: '100%', sm: '600px' },
         background: 'linear-gradient(145deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.9))',
@@ -202,23 +203,23 @@ function PokemonForm({ onAdd, onShowMessage }) {
       }}
     >
       {/* Header */}
-      <Box sx={{ 
-        display: 'flex', 
+      <Box sx={{
+        display: 'flex',
         flexDirection: { xs: 'column', sm: 'row' },
-        alignItems: 'center', 
-        justifyContent: 'center', 
+        alignItems: 'center',
+        justifyContent: 'center',
         gap: { xs: 2, sm: 4 },
         mb: { xs: 3, sm: 4 }
       }}>
-        <PokemonIcon sx={{ 
-          fontSize: { xs: 32, sm: 36 }, 
+        <PokemonIcon sx={{
+          fontSize: { xs: 32, sm: 36 },
           color: 'primary.main',
           filter: 'drop-shadow(0 2px 4px rgba(59, 130, 246, 0.3))'
         }} />
-        <Typography 
-          variant="h5" 
-          color="primary.main" 
-          sx={{ 
+        <Typography
+          variant="h5"
+          color="primary.main"
+          sx={{
             fontWeight: 700,
             fontSize: { xs: '1.4rem', sm: '1.5rem' },
             textAlign: 'center'
@@ -232,8 +233,8 @@ function PokemonForm({ onAdd, onShowMessage }) {
           startIcon={loading && dataReady ? <CircularProgress size={16} /> : <RefreshIcon />}
           onClick={handleRefresh}
           disabled={loading}
-          sx={{ 
-            ml: { sm: 'auto' }, 
+          sx={{
+            ml: { sm: 'auto' },
             mt: { xs: 0, sm: 0 },
             minWidth: 'fit-content'
           }}
@@ -271,41 +272,38 @@ function PokemonForm({ onAdd, onShowMessage }) {
 
       {/* Form */}
       <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-        {/* Pokémon Select - Full Width */}
-        <FormControl fullWidth required disabled={!dataReady}>
-          <InputLabel>Pokémon</InputLabel>
-          <Select
-            name="name"
-            value={form.name}
-            onChange={handleChange}
-            label="Pokémon"
-            startAdornment={
-              !dataReady ? (
-                <Box sx={{ display: 'flex', alignItems: 'center', pl: 2 }}>
-                  <CircularProgress size={16} />
-                </Box>
-              ) : null
-            }
-          >
-            {dataReady ? (
-              pokemonData.map((p, index) => (
-                <MenuItem key={(p.id || p.name)+index+ ''} value={p.name}>{p.name}</MenuItem>
-              ))
-            ) : (
-              <MenuItem value="">Cargando Pokémon...</MenuItem>
-            )}
-          </Select>
-          {!dataReady && (
-            <Typography variant="caption" color="text.secondary" sx={{ mt: 1, textAlign: 'center', fontStyle: 'italic' }}>
-              ⏳ Cargando datos de Pokémon...
-            </Typography>
-          )}
-          {dataReady && !form.name && (
-            <Typography variant="caption" color="text.secondary" sx={{ mt: 1, textAlign: 'center', fontStyle: 'italic' }}>
-              💡 Selecciona un Pokémon para habilitar los campos de movimientos
-            </Typography>
-          )}
-        </FormControl>
+        {/* Pokémon Select con búsqueda - Full Width */}
+        <SearchableSelect
+          options={pokemonData}
+          value={form.name}
+          onChange={(newValue) => handleChange({ target: { name: 'name', value: newValue } })}
+          label="Pokémon"
+          placeholder="Escribe para buscar Pokémon..."
+          disabled={!dataReady}
+          loading={loading && !dataReady}
+          showAvatar={true}
+          avatarProperty="imageUrl"
+          typesProperty="types"
+          required={true}
+          maxHeight={280}
+          maxDisplayItems={50}
+          minSearchLength={2}
+        />
+        {!dataReady && (
+          <Typography variant="caption" color="text.secondary" sx={{ mt: -2, mb: 1, textAlign: 'center', fontStyle: 'italic' }}>
+            ⏳ Cargando datos de Pokémon...
+          </Typography>
+        )}
+        {dataReady && !form.name && pokemonData.length > 100 && (
+          <Typography variant="caption" color="text.secondary" sx={{ mt: -2, mb: 1, textAlign: 'center', fontStyle: 'italic' }}>
+            💡 Escribe al menos 2 caracteres para buscar entre {pokemonData.length} Pokémon
+          </Typography>
+        )}
+        {dataReady && !form.name && pokemonData.length <= 100 && (
+          <Typography variant="caption" color="text.secondary" sx={{ mt: -2, mb: 1, textAlign: 'center', fontStyle: 'italic' }}>
+            💡 Busca y selecciona un Pokémon para continuar
+          </Typography>
+        )}
 
         {/* Level - Full Width */}
         <TextField

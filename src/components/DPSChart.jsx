@@ -18,10 +18,10 @@ import {
 
 // Registrar todos los elementos necesarios para gráficos mixtos
 ChartJS.register(
-  BarElement, 
+  BarElement,
   CategoryScale,
-  LinearScale, 
-  Tooltip, 
+  LinearScale,
+  Tooltip,
   Legend,
   LineElement,
   PointElement,
@@ -33,41 +33,41 @@ function DPSChart({ pokemonList }) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const isTablet = useMediaQuery(theme.breakpoints.down('md'));
-  
+
   // Función para extraer DPS según la estructura (object o number)
   const getDPS = (pokemon, window = 'short') => {
     if (!pokemon) return 0;
-    
+
     if (typeof pokemon.dps === 'object' && pokemon.dps !== null) {
       return parseFloat(pokemon.dps[window]) || parseFloat(pokemon.dps.short) || 0;
     }
-    
+
     return parseFloat(pokemon.dps) || 0;
   };
 
   // Función para obtener daño total de combate
   const getTotalDamage = (pokemon, window = 'short') => {
     if (!pokemon) return 0;
-    
+
     if (pokemon.combatDetails && pokemon.combatDetails[window]) {
       return pokemon.combatDetails[window].totalDamage || 0;
     }
-    
+
     // Fallback calculation
     const dps = getDPS(pokemon, window);
     const timeMultiplier = window === 'short' ? 10 : window === 'medium' ? 30 : 60;
     return Math.round(dps * timeMultiplier);
   };
-  
+
   // Ordenar por DPS de la ventana corta (10s) para consistencia
   const sortedPokemonList = [...pokemonList].sort((a, b) => getDPS(b) - getDPS(a));
 
   if (pokemonList.length === 0) {
     return (
-      <Paper 
-        elevation={3} 
-        sx={{ 
-          p: { xs: 3, sm: 4, md: 5 }, 
+      <Paper
+        elevation={3}
+        sx={{
+          p: { xs: 3, sm: 4, md: 5 },
           textAlign: 'center',
           mx: 'auto',
           maxWidth: { xs: '100%', sm: '600px' },
@@ -76,34 +76,34 @@ function DPSChart({ pokemonList }) {
           border: '1px solid rgba(59, 130, 246, 0.1)',
         }}
       >
-        <Box sx={{ 
-          display: 'flex', 
-          flexDirection: 'column', 
+        <Box sx={{
+          display: 'flex',
+          flexDirection: 'column',
           alignItems: 'center',
           gap: { xs: 2, sm: 3 }
         }}>
-          <ChartIcon sx={{ 
-            fontSize: { xs: 56, sm: 72, md: 80 }, 
+          <ChartIcon sx={{
+            fontSize: { xs: 56, sm: 72, md: 80 },
             color: 'text.disabled',
             opacity: 0.6,
             filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.3))'
           }} />
           <Box>
-            <Typography 
-              variant="h6" 
-              color="text.secondary" 
-              gutterBottom 
-              sx={{ 
+            <Typography
+              variant="h6"
+              color="text.secondary"
+              gutterBottom
+              sx={{
                 fontSize: { xs: '1.1rem', sm: '1.25rem', md: '1.4rem' },
                 fontWeight: 600
               }}
             >
               📊 Gráfico de DPS no disponible
             </Typography>
-            <Typography 
-              variant="body2" 
-              color="text.secondary" 
-              sx={{ 
+            <Typography
+              variant="body2"
+              color="text.secondary"
+              sx={{
                 fontSize: { xs: '0.9rem', sm: '1rem' },
                 opacity: 0.8,
                 maxWidth: '400px',
@@ -245,7 +245,7 @@ function DPSChart({ pokemonList }) {
           label: function(context) {
             const label = context.dataset.label;
             const value = context.raw;
-            
+
             if (label.includes('Daño Total (10s)')) {
               return `💥 ${value} (10s)`;
             } else if (label.includes('Daño Total (30s)')) {
@@ -261,33 +261,33 @@ function DPSChart({ pokemonList }) {
             const pokemon = sortedPokemonList[context.dataIndex];
             const datasetLabel = context.dataset.label;
             const labels = [];
-            
+
             if (!pokemon) return labels;
-            
+
             // Información ultra-compacta en máximo 2 líneas
             if (datasetLabel.includes('Daño Total')) {
-              const window = datasetLabel.includes('10s') ? 'short' : 
+              const window = datasetLabel.includes('10s') ? 'short' :
                            datasetLabel.includes('30s') ? 'medium' : 'long';
-              
+
               // Línea 1: Stats de combate principales (horizontal)
               const dps = getDPS(pokemon, window)?.toFixed(1);
               const fastAttacks = pokemon.combatDetails?.[window]?.fastAttacks || 'N/A';
               const chargedAttacks = pokemon.combatDetails?.[window]?.chargedAttacks || 'N/A';
               labels.push(`⚔️ DPS: ${dps} | ⚡ ${fastAttacks} Fast | 💫 ${chargedAttacks} Charged`);
-              
+
               // Línea 2: Tipo y stats básicos (horizontal)
               const typeStr = Array.isArray(pokemon.types) ? pokemon.types.join('/') : pokemon.types || 'N/A';
               const attack = pokemon.attack || 'N/A';
               const level = pokemon.level || 30;
               labels.push(`🏷️ ${typeStr} | 📊 ATK:${attack} LV:${level}`);
-              
+
             } else if (datasetLabel.includes('DPS Promedio')) {
               // Solo información esencial para la línea DPS
               const attack = pokemon.attack || 'N/A';
               const level = pokemon.level || 30;
               labels.push(`📊 ATK: ${attack} | Nivel: ${level} | DPS constante`);
             }
-            
+
             return labels;
           }
         }
@@ -404,36 +404,36 @@ function DPSChart({ pokemonList }) {
   };
 
   return (
-    <Paper 
-      elevation={3} 
-      sx={{ 
-        p: { xs: 2, sm: 3, md: 4 }, 
-        mx: 'auto', 
+    <Paper
+      elevation={3}
+      sx={{
+        p: { xs: 2, sm: 3, md: 4 },
+        mx: 'auto',
         width: '100%',
         background: 'linear-gradient(145deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.9))',
         backdropFilter: 'blur(10px)',
         border: '1px solid rgba(59, 130, 246, 0.2)',
       }}
     >
-      <Box 
-        display="flex" 
-        alignItems="center" 
-        mb={{ xs: 2, sm: 3 }} 
+      <Box
+        display="flex"
+        alignItems="center"
+        mb={{ xs: 2, sm: 3 }}
         justifyContent="center"
         flexDirection={{ xs: 'column', sm: 'row' }}
         gap={{ xs: 1, sm: 0 }}
       >
-        <BarChartIcon sx={{ 
-          mr: { xs: 0, sm: 1 }, 
-          color: 'primary.main', 
-          fontSize: { xs: '1.5rem', sm: '1.75rem', md: '2rem' } 
+        <BarChartIcon sx={{
+          mr: { xs: 0, sm: 1 },
+          color: 'primary.main',
+          fontSize: { xs: '1.5rem', sm: '1.75rem', md: '2rem' }
         }} />
-        <Typography 
-          variant="h5" 
-          component="h2" 
-          color="primary" 
+        <Typography
+          variant="h5"
+          component="h2"
+          color="primary"
           fontWeight="bold"
-          sx={{ 
+          sx={{
             fontSize: { xs: '1.25rem', sm: '1.5rem', md: '1.75rem' },
             textAlign: 'center'
           }}
@@ -441,12 +441,12 @@ function DPSChart({ pokemonList }) {
           📈 Comparación de Daño Total Multi-Ventana
         </Typography>
       </Box>
-      <Typography 
-        variant="body2" 
-        color="text.secondary" 
-        textAlign="center" 
+      <Typography
+        variant="body2"
+        color="text.secondary"
+        textAlign="center"
         mb={{ xs: 2, sm: 3 }}
-        sx={{ 
+        sx={{
           fontSize: { xs: '0.75rem', sm: '0.875rem', md: '1rem' },
           lineHeight: { xs: 1.4, sm: 1.5 },
           maxWidth: '900px',
@@ -459,7 +459,7 @@ function DPSChart({ pokemonList }) {
         <br />
         ⭐ <strong>STAB</strong>: +20% daño cuando tipo del ataque = tipo del Pokémon | 🔥 <strong>Shadow</strong>: +20% daño adicional
       </Typography>
-      <Box sx={{ 
+      <Box sx={{
         height: { xs: 350, sm: 400, md: 450, lg: 500 },
         width: '100%',
         position: 'relative'
