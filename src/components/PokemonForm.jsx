@@ -178,7 +178,7 @@ function PokemonForm({ onAdd, onShowMessage }) {
       <div className="text-center mb-6 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4">
         <PokemonIcon className="text-blue-500 text-3xl" />
         <h2 className="text-2xl font-bold text-blue-500">
-          🎯 Agregar Pokémon
+          🎯 Agregar Pokémon v2.0
         </h2>
         <Button
           variant="outlined"
