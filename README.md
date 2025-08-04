@@ -1,4 +1,65 @@
-# ⚡ Comparador de Pokémon GO ⚡
+# ⚡ # ⚡ Comparador de Pokémon GO ⚡
+
+Una aplicación web moderna para analizar y comparar el DPS de tus Pokémon favoritos en Pokémon GO.
+
+## 🎯 Características
+
+- 📊 **Análisis de DPS** con datos en tiempo real
+- 📱 **PWA completa** - instalable como app nativa
+- 🎨 **Interfaz moderna** con tema oscuro
+- 📈 **Gráficos interactivos** para visualizar comparaciones
+- 🔄 **Auto-actualización** con Watchtower
+- 💾 **Funcionamiento offline** una vez cacheado
+
+## 🚀 Instalación Rápida
+
+### Instalación automática (recomendado)
+
+```bash
+curl -sSL https://raw.githubusercontent.com/4rgs/PoGoCompi/develop/install.sh | bash
+```
+
+### CasaOS / Docker Compose
+
+```bash
+# Clonar y ejecutar
+git clone https://github.com/4rgs/PoGoCompi.git
+cd PoGoCompi
+docker-compose up -d
+```
+
+### CasaOS App Store
+
+1. Abrir CasaOS → Apps → Custom Install
+2. Pegar URL: `https://raw.githubusercontent.com/4rgs/PoGoCompi/develop/docker-compose.yml`
+3. Instalar
+
+### Acceso
+
+- **URL**: `http://tu-ip:3001`
+- **PWA**: Instala desde el navegador para mejor experiencia
+
+## 🔧 Tecnologías
+
+- React 18 + Vite
+- Material-UI + Chart.js
+- Docker + Auto-actualización
+- PWA con Service Worker
+
+## 📱 PWA
+
+La aplicación se puede instalar como PWA desde cualquier navegador moderno:
+- Chrome/Edge: Ícono de instalación en barra de direcciones
+- Firefox: Menú → Instalar aplicación
+- Safari iOS: Compartir → Añadir a pantalla de inicio
+
+## 🤝 Contribuciones
+
+¡Las contribuciones son bienvenidas! Por favor abre un issue o pull request.
+
+## 📄 Licencia
+
+MIT License - Ver [LICENSE](LICENSE) para más detalles.or de Pokémon GO ⚡
 
 Una aplicación web moderna para analizar y comparar el DPS de tus Pokémon favoritos en Pokémon GO.
 
