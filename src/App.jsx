@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-import { CssBaseline, Container, Typography, Box, Snackbar, Alert } from '@mui/material';
+import { CssBaseline, Snackbar, Alert } from '@mui/material';
 import PokemonForm from './components/PokemonForm';
 import ComparisonTable from './components/ComparisonTable';
 import DPSChart from './components/DPSChart';
@@ -266,89 +266,30 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Box sx={{
-        minHeight: '100vh',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'stretch',
-        justifyContent: 'flex-start',
-        px: 0,
-        py: { xs: 2, sm: 3, md: 4 },
-        background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%)',
-        position: 'relative',
-        '&::before': {
-          content: '""',
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          background: 'radial-gradient(circle at 30% 20%, rgba(59, 130, 246, 0.1) 0%, transparent 50%), radial-gradient(circle at 70% 80%, rgba(16, 185, 129, 0.1) 0%, transparent 50%)',
-          pointerEvents: 'none',
-          zIndex: 0,
-        }
-      }}>
-        <Container
-          maxWidth={false}
-          sx={{
-            width: '100%',
-            maxWidth: '100%',
-            mx: 'auto',
-            px: { xs: 2, sm: 3, md: 4, lg: 5, xl: 6 },
-            position: 'relative',
-            zIndex: 1,
-            flex: 1,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-          }}
-        >
-          <Box textAlign="center" mb={{ xs: 4, sm: 5, md: 6 }}>
-            <Typography
-              variant="h3"
-              component="h1"
-              gutterBottom
-              color="primary"
-              fontWeight="bold"
-              sx={{
-                fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem', lg: '3.5rem' },
-                mb: { xs: 2, sm: 3 },
-                background: 'linear-gradient(45deg, #60a5fa, #3b82f6, #10b981)',
-                backgroundClip: 'text',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                textShadow: '0 2px 10px rgba(59, 130, 246, 0.3)',
-                filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))'
-              }}
-            >
-              ⚡ Comparador de Pokémon GO ⚡
-            </Typography>
-            <Typography
-              variant="h6"
-              color="text.secondary"
-              sx={{
-                fontSize: { xs: '1rem', sm: '1.1rem', md: '1.25rem', lg: '1.35rem' },
-                maxWidth: '700px',
-                mx: 'auto',
-                lineHeight: { xs: 1.4, sm: 1.5 },
-                opacity: 0.9,
-                fontWeight: 400,
-              }}
-            >
-              🎯 Analiza y compara el DPS de tus Pokémon favoritos con precisión profesional
-            </Typography>
-          </Box>
+      <div className="min-h-screen flex flex-col items-stretch justify-start py-4 md:py-6 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 relative">
+        {/* Background gradients */}
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-transparent to-emerald-500/10 pointer-events-none"></div>
 
-          <Box sx={{ flex: 1, width: '100%', mx: 'auto' }}>
+        <div className="w-full max-w-none mx-auto px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 relative z-10 flex-1 flex flex-col items-center">
+          <div className="text-center mb-8 md:mb-12">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-4 sm:mb-6 bg-gradient-to-r from-blue-400 via-blue-500 to-emerald-400 bg-clip-text text-transparent filter drop-shadow-lg">
+              ⚡ Comparador de Pokémon GO ⚡
+            </h1>
+            <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-slate-300 max-w-3xl mx-auto leading-relaxed opacity-90 font-normal">
+              🎯 Analiza y compara el DPS de tus Pokémon favoritos con precisión profesional
+            </p>
+          </div>
+
+          <div className="flex-1 w-full mx-auto">
             <PokemonForm onAdd={handleAddPokemon} onShowMessage={showNotification} />
             <ComparisonTable pokemonList={pokemonList} onClear={handleClearList} />
             <DPSChart pokemonList={pokemonList} />
-          </Box>
-        </Container>
+          </div>
+        </div>
 
         {/* Footer con información de versión */}
         <AppFooter />
-      </Box>
+      </div>
 
       {/* PWA Status - Botones de instalación y gestión de cache */}
       <PWAStatus onCacheApiData={showNotification} />
