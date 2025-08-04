@@ -30,6 +30,23 @@ cd "$INSTALL_DIR"
 echo "📥 Descargando configuración..."
 curl -sSL https://raw.githubusercontent.com/4rgs/PoGoCompi/develop/docker-compose.yml -o docker-compose.yml
 
+# Descargar Dockerfile para build local
+echo "📥 Descargando Dockerfile..."
+curl -sSL https://raw.githubusercontent.com/4rgs/PoGoCompi/develop/Dockerfile -o Dockerfile
+
+# Descargar package.json para build
+echo "📥 Descargando archivos de configuración..."
+curl -sSL https://raw.githubusercontent.com/4rgs/PoGoCompi/develop/package.json -o package.json
+curl -sSL https://raw.githubusercontent.com/4rgs/PoGoCompi/develop/package-lock.json -o package-lock.json
+
+# Descargar código fuente
+echo "📥 Descargando código fuente..."
+curl -sSL https://github.com/4rgs/PoGoCompi/archive/refs/heads/develop.tar.gz | tar xz --strip-components=1
+
+# Construir imagen local
+echo "🔨 Construyendo imagen..."
+docker build -t ghcr.io/4rgs/pogocompi:latest .
+
 # Iniciar servicios
 echo "🚀 Iniciando servicios..."
 docker-compose up -d
