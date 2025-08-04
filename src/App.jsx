@@ -292,13 +292,15 @@ function App() {
           maxWidth="xl"
           sx={{
             width: '100%',
-            maxWidth: { xs: '100%', sm: '600px', md: '900px', lg: '1200px', xl: '1400px' },
+            maxWidth: { xs: '95%', sm: '600px', md: '900px', lg: '1200px', xl: '1400px' },
             mx: 'auto',
+            px: { xs: 2, sm: 3, md: 4 },
             position: 'relative',
             zIndex: 1,
             flex: 1,
             display: 'flex',
             flexDirection: 'column',
+            alignItems: 'center',
           }}
         >
           <Box textAlign="center" mb={{ xs: 4, sm: 5, md: 6 }}>
@@ -337,7 +339,7 @@ function App() {
             </Typography>
           </Box>
 
-          <Box sx={{ flex: 1 }}>
+          <Box sx={{ flex: 1, width: '100%', maxWidth: '1200px', mx: 'auto' }}>
             <PokemonForm onAdd={handleAddPokemon} onShowMessage={showNotification} />
             <ComparisonTable pokemonList={pokemonList} onClear={handleClearList} />
             <DPSChart pokemonList={pokemonList} />
