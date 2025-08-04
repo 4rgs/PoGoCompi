@@ -1,4 +1,4 @@
-# ⚡ # ⚡ Comparador de Pokémon GO ⚡
+# ⚡ Comparador de Pokémon GO ⚡
 
 Una aplicación web moderna para analizar y comparar el DPS de tus Pokémon favoritos en Pokémon GO.
 

@@ -20,16 +20,88 @@ RUN npm run build                # genera /app/dist
 FROM nginx:1.26-alpine AS runtime
 WORKDIR /usr/share/nginx/html
 
-# Instalar wget para el healthcheck y crear directorios necesarios
-RUN apk add --no-cache wget && \
-    mkdir -p /tmp/nginx
+# Instalar wget para el healthcheck
+RUN apk add --no-cache wget
 
-# Copiar configuración personalizada de nginx para PWA
-COPY nginx.conf /etc/nginx/nginx.conf
+# Crear configuración nginx optimizada para PWA
+RUN cat > /etc/nginx/nginx.conf << 'EOF'
+events {
+    worker_connections 1024;
+}
+
+http {
+    include       /etc/nginx/mime.types;
+    default_type  application/octet-stream;
+
+    # Configuración para PWA
+    map $sent_http_content_type $expires {
+        default                    off;
+        text/html                  epoch;
+        text/css                   max;
+        application/javascript     max;
+        application/woff2          max;
+        ~image/                    max;
+    }
+
+    gzip on;
+    gzip_vary on;
+    gzip_min_length 1024;
+    gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript;
+
+    server {
+        listen 8080;
+        server_name localhost;
+        root /usr/share/nginx/html;
+        index index.html;
+
+        # Headers de seguridad para PWA
+        add_header X-Frame-Options DENY;
+        add_header X-Content-Type-Options nosniff;
+        add_header X-XSS-Protection "1; mode=block";
+
+        # Cache headers
+        expires $expires;
+
+        # Manifest y Service Worker con headers específicos
+        location = /manifest.webmanifest {
+            add_header Content-Type application/manifest+json;
+            add_header Cache-Control "public, max-age=31536000";
+        }
+
+        location = /sw.js {
+            add_header Content-Type application/javascript;
+            add_header Cache-Control "public, max-age=0";
+            add_header Service-Worker-Allowed "/";
+        }
+
+        location = /registerSW.js {
+            add_header Content-Type application/javascript;
+            add_header Cache-Control "public, max-age=31536000";
+        }
+
+        # Assets estáticos con cache largo
+        location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$ {
+            add_header Cache-Control "public, max-age=31536000";
+        }
+
+        # Fallback para SPA
+        location / {
+            try_files $uri $uri/ /index.html;
+        }
+
+        # Health check endpoint
+        location /health {
+            access_log off;
+            return 200 "healthy\n";
+            add_header Content-Type text/plain;
+        }
+    }
+}
+EOF
 
 # ⚠️ SOLO artefactos finales; el nodo_modules se descarta
 COPY --from=build /app/dist .
 
-EXPOSE 80
-HEALTHCHECK CMD wget -qO- http://localhost:80/health || exit 1
+EXPOSE 8080
+HEALTHCHECK CMD wget -qO- http://localhost:8080/health || exit 1
 CMD ["nginx", "-g", "daemon off;"]
