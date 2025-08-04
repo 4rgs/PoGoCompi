@@ -1,53 +1,65 @@
 # ⚡ Comparador de Pokémon GO ⚡
 
-Una aplicación web moderna y responsiva para analizar y comparar el DPS (Daño por Segundo) de tus Pokémon favoritos en Pokémon GO, ahora con datos en tiempo real de **PoGoAPI.net**.
+Una aplicación web moderna para analizar y comparar el DPS de tus Pokémon favoritos en Pokémon GO.
 
-## 🌟 Características Principales
+## � Características
 
-### 🎯 Funcionalidades Core
-- **Datos en tiempo real** desde PoGoAPI.net con fallback local
-- **Cálculo preciso de DPS** basado en estadísticas oficiales del juego
-- **Comparación visual** con gráficos interactivos de Chart.js
-- **Nomenclatura única** para diferenciar Pokémon duplicados (ej: "Charizard #2")
-- **Ordenamiento automático** por DPS de mayor a menor
-- **Análisis de daño total** en ventanas de 10 segundos
-- **Cache inteligente** para optimizar el rendimiento
-- **Actualización manual** de datos desde la API
+- 📊 **Análisis de DPS** con datos en tiempo real
+- 📱 **PWA completa** - instalable como app nativa
+- 🎨 **Interfaz moderna** con tema oscuro
+- 📈 **Gráficos interactivos** para visualizar comparaciones
+- 🔄 **Auto-actualización** con Watchtower
+- 💾 **Funcionamiento offline** una vez cacheado
 
-### 🌐 Integración con PoGoAPI
-- **Datos actualizados** directamente desde la base de datos oficial
-- **Múltiples endpoints** para estadísticas, movimientos y tipos
-- **Sistema de fallback** a datos locales en caso de error
-- **Transformación automática** de datos API al formato de la aplicación
-- **Cache con expiración** para reducir llamadas innecesarias
+## 🚀 Instalación Rápida
 
-### 🎨 Diseño y UX
-- **Material-UI** con tema oscuro personalizado
-- **Completamente responsivo** - se adapta a móviles, tablets y desktop
-- **Animaciones suaves** y efectos hover
-- **Gradients y efectos glassmorphism** para un look moderno
-- **Notificaciones elegantes** para feedback del usuario
-- **Estados de carga** con indicadores visuales
-- **Estados vacíos informativos** con iconografía clara
+### Instalación automática (recomendado)
 
-### 📊 Visualización de Datos
-- **Gráfico de barras dual** mostrando DPS y daño total
-- **Tabla responsiva** con información detallada
-- **Tooltips informativos** con datos adicionales
-- **Adaptación automática** para diferentes tamaños de pantalla
+```bash
+curl -sSL https://raw.githubusercontent.com/4rgs/PoGoCompi/main/install.sh | bash
+```
 
-### 🎨 Características Visuales Avanzadas
-- **Colores por tipo**: Pokémon y movimientos con colores basados en sus tipos oficiales
-- **Gradientes duales**: Para Pokémon con dos tipos (ej: Steel/Dragon para Dialga)
-- **Iconos de tipo**: Cada movimiento muestra su icono de tipo correspondiente
-- **Badges informativos**: Movimientos con poder, duración y costo de energía visible
-- **Tooltips detallados**: Información completa de stats, tipos y movimientos en gráficos
-- **Indicador STAB**: Marca visual cuando hay bonus de mismo tipo (+20% daño)
-- **TypeChips**: Componentes reutilizables para mostrar tipos con diseño consistente
-- **Fondos adaptativos**: Filas de tabla con colores de tipo para mejor legibilidad
+### CasaOS / Docker Compose
 
-### 🛠️ Tecnologías Utilizadas
-- **React 18** con Hooks
+```bash
+# Clonar y ejecutar
+git clone https://github.com/4rgs/PoGoCompi.git
+cd PoGoCompi
+docker-compose up -d
+```
+
+### CasaOS App Store
+
+1. Abrir CasaOS → Apps → Custom Install
+2. Pegar URL: `https://raw.githubusercontent.com/4rgs/PoGoCompi/main/docker-compose.yml`
+3. Instalar
+
+### Acceso
+
+- **URL**: `http://tu-ip:3001`
+- **PWA**: Instala desde el navegador para mejor experiencia
+
+## 🔧 Tecnologías
+
+- React 18 + Vite
+- Material-UI + Chart.js
+- Docker + Auto-actualización
+- PWA con Service Worker
+
+## 📱 PWA
+
+La aplicación se puede instalar como PWA desde cualquier navegador moderno:
+- Chrome/Edge: Ícono de instalación en barra de direcciones
+- Firefox: Menú → Instalar aplicación
+- Safari iOS: Compartir → Añadir a pantalla de inicio
+
+## 🤝 Contribuciones
+
+¡Las contribuciones son bienvenidas! Por favor abre un issue o pull request.
+
+## 📄 Licencia
+
+MIT License - Ver [LICENSE](LICENSE) para más detalles.
 - **Material-UI (MUI)** para componentes y theming
 - **Chart.js** con react-chartjs-2 para visualizaciones
 - **PoGoAPI.net** para datos en tiempo real

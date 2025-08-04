@@ -6,32 +6,27 @@ services:
     container_name: pogocompi-app
     restart: unless-stopped
     ports:
-      - "3001:80"  # Puerto externo 3001 para evitar conflictos con CasaOS
+      - "3001:8080"
     environment:
-      - TZ=America/Mexico_City  # Ajusta según tu zona horaria
+      - TZ=America/Mexico_City
     networks:
       - pogocompi-network
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:80/health"]
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/"]
       interval: 30s
       timeout: 10s
       retries: 3
-      start_period: 40s
+      start_period: 30s
     labels:
-      # Etiquetas para CasaOS
       - "casaos.name=Pokémon GO Comparador"
-      - "casaos.title=Comparador de Pokémon GO - DPS Analyzer"
-      - "casaos.description=Analiza y compara el DPS de tus Pokémon favoritos con precisión profesional"
-      - "casaos.icon=https://raw.githubusercontent.com/4rgs/PoGoCompi/develop/public/icons/icon-512x512.png"
-      - "casaos.category=Entertainment"
+      - "casaos.title=PokéDPS - Comparador de DPS"
+      - "casaos.description=Analiza y compara el DPS de tus Pokémon favoritos"
+      - "casaos.icon=https://raw.githubusercontent.com/4rgs/PoGoCompi/develop/public/icons/icon-192x192.png"
+      - "casaos.category=Games"
       - "casaos.port=3001"
       - "casaos.scheme=http"
       - "casaos.hostname="
-      # Etiquetas para Traefik (si usas reverse proxy)
-      - "traefik.enable=true"
-      - "traefik.http.routers.pogocompi.rule=Host(`pogocompi.local`)"
-      - "traefik.http.services.pogocompi.loadbalancer.server.port=80"
-      # Etiquetas para Watchtower
+      - "casaos.tips.pwa=Instala como PWA desde tu navegador para mejor experiencia"
       - "com.centurylinklabs.watchtower.enable=true"
 
   watchtower:
@@ -40,57 +35,20 @@ services:
     restart: unless-stopped
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - /etc/timezone:/etc/timezone:ro
-      - /etc/localtime:/etc/localtime:ro
     environment:
-      - TZ=America/Mexico_City  # Ajusta según tu zona horaria
+      - TZ=America/Mexico_City
       - WATCHTOWER_CLEANUP=true
-      - WATCHTOWER_INCLUDE_RESTARTING=true
-      - WATCHTOWER_POLL_INTERVAL=1800  # 30 minutos
+      - WATCHTOWER_POLL_INTERVAL=3600
       - WATCHTOWER_LABEL_ENABLE=true
-      - WATCHTOWER_NOTIFICATIONS=shoutrrr
-      - WATCHTOWER_NOTIFICATION_URL=  # Opcional: agregar webhook para notificaciones
-    command: --schedule "0 */6 * * *" --cleanup --label-enable  # Cada 6 horas
+      - WATCHTOWER_INCLUDE_STOPPED=true
     networks:
       - pogocompi-network
     labels:
-      - "casaos.name=Pokémon GO - Auto Updater"
-      - "casaos.title=Auto-actualizador para Pokémon GO Comparador"
-      - "casaos.description=Mantiene automáticamente actualizada la aplicación"
+      - "casaos.name=Auto-actualizador"
       - "casaos.category=Utilities"
+      - "casaos.description=Mantiene PoGoCompi actualizado automáticamente"
 
 networks:
   pogocompi-network:
     driver: bridge
-    name: pogocompi-net
-    labels:
-      - "casaos.name=Pokémon GO Network"
-
-# Configuración adicional para CasaOS
-x-casaos:
-  name: "Pokémon GO Comparador"
-  title: "Comparador de Pokémon GO - DPS Analyzer"
-  description: "Analiza y compara el DPS de tus Pokémon favoritos con precisión profesional. PWA con funcionalidad offline."
-  category: "Entertainment"
-  icon: "https://raw.githubusercontent.com/4rgs/PoGoCompi/develop/public/icons/icon-512x512.png"
-  screenshot: "https://raw.githubusercontent.com/4rgs/PoGoCompi/develop/public/screenshots/desktop.png"
-  thumbnail: "https://raw.githubusercontent.com/4rgs/PoGoCompi/develop/public/icons/icon-192x192.png"
-  tagline: "🔍 Analiza DPS • 📊 Compara Pokémon • 📱 PWA Offline"
-  tips: |
-    ## Consejos de uso:
-    - 📱 Instala como PWA para mejor experiencia
-    - 🔄 Los datos se actualizan automáticamente
-    - 📊 Compara hasta múltiples Pokémon
-    - 💾 Funciona offline una vez cacheado
-  changelog: |
-    ## Últimas actualizaciones:
-    - ✨ Interfaz mejorada
-    - 🚀 Mejor rendimiento
-    - 📱 PWA optimizada
-    - 🔄 Auto-actualización
-  author: "4rgs"
-  website: "https://github.com/4rgs/PoGoCompi"
-  healthy_check_url: "http://localhost:3001/health"
-  architectures:
-    - amd64
-    - arm64
+    name: pogocompi-network
