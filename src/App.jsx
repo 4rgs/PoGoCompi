@@ -270,9 +270,9 @@ function App() {
         minHeight: '100vh',
         display: 'flex',
         flexDirection: 'column',
-        alignItems: 'center',
+        alignItems: 'stretch',
         justifyContent: 'flex-start',
-        px: { xs: 1, sm: 2, md: 3 },
+        px: 0,
         py: { xs: 2, sm: 3, md: 4 },
         background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%)',
         position: 'relative',
@@ -289,12 +289,12 @@ function App() {
         }
       }}>
         <Container
-          maxWidth="xl"
+          maxWidth={false}
           sx={{
             width: '100%',
-            maxWidth: { xs: '95%', sm: '600px', md: '900px', lg: '1200px', xl: '1400px' },
+            maxWidth: '100%',
             mx: 'auto',
-            px: { xs: 2, sm: 3, md: 4 },
+            px: { xs: 2, sm: 3, md: 4, lg: 5, xl: 6 },
             position: 'relative',
             zIndex: 1,
             flex: 1,
@@ -339,7 +339,7 @@ function App() {
             </Typography>
           </Box>
 
-          <Box sx={{ flex: 1, width: '100%', maxWidth: '1200px', mx: 'auto' }}>
+          <Box sx={{ flex: 1, width: '100%', mx: 'auto' }}>
             <PokemonForm onAdd={handleAddPokemon} onShowMessage={showNotification} />
             <ComparisonTable pokemonList={pokemonList} onClear={handleClearList} />
             <DPSChart pokemonList={pokemonList} />
