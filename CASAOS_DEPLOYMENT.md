@@ -41,6 +41,19 @@ wget https://raw.githubusercontent.com/4rgs/PoGoCompi/develop/docker-compose.pwa
 docker-compose -f docker-compose.pwa.yml --profile https up -d
 ```
 
+### 5. **Setup con Traefik** (`docker-compose.traefik.yml`) 🆕
+**Para integración con Traefik existente.**
+
+```bash
+# Crear archivo .env
+echo "DOMAIN=tu-dominio.com" > .env
+echo "CERT_RESOLVER=letsencrypt" >> .env
+
+# Descargar y ejecutar
+wget https://raw.githubusercontent.com/4rgs/PoGoCompi/develop/docker-compose.traefik.yml
+docker-compose -f docker-compose.traefik.yml up -d
+```
+
 ## 🔧 Configuración en CasaOS
 
 ### Importar desde CasaOS App Store:
@@ -75,9 +88,17 @@ docker-compose -f docker-compose.pwa.yml --profile https up -d
 ## 🌐 Acceso
 
 Una vez instalado:
-- **URL Local**: `http://tu-zima-ip:3001`
+- **URL Local HTTP**: `http://tu-zima-ip:3001`
+- **URL Local HTTPS** (setup PWA): `https://tu-zima-ip:3443`
+- **URL Traefik**: `https://pogocompi.tu-dominio.com`
 - **CasaOS Dashboard**: Aparecerá como app instalada
 - **PWA**: Instalar desde el navegador para mejor experiencia
+
+### 🔌 Puertos Utilizados
+- **3001**: HTTP principal (compatible con Traefik)
+- **3080**: HTTP alternativo (setup PWA)  
+- **3443**: HTTPS alternativo (setup PWA)
+- **80/443**: Reservados para Traefik (no se usan)
 
 ## ⚙️ Configuraciones Opcionales
 
@@ -216,8 +237,8 @@ services:
   nginx-proxy:
     image: nginx:alpine
     ports:
-      - "443:443"
-      - "80:80"
+      - "3443:8443"  # HTTPS en puerto 3443 (evita conflicto con Traefik)
+      - "3080:8080"  # HTTP en puerto 3080 (evita conflicto con Traefik)
     volumes:
       - ./nginx-ssl.conf:/etc/nginx/nginx.conf:ro
       - ./certs:/etc/nginx/certs:ro
@@ -246,11 +267,11 @@ events {
 
 http {
     upstream pogocompi {
-        server pogocompi:80;
+        server pogocompi:8080;
     }
 
     server {
-        listen 443 ssl;
+        listen 8443 ssl;
         server_name tu-dominio.local;
 
         ssl_certificate /etc/nginx/certs/tu-dominio.local.crt;
@@ -266,9 +287,9 @@ http {
     }
 
     server {
-        listen 80;
+        listen 8080;
         server_name tu-dominio.local;
-        return 301 https://$server_name$request_uri;
+        return 301 https://$server_name:3443$request_uri;
     }
 }
 ```
@@ -282,6 +303,42 @@ ngrok http tu-zima-ip:3001
 
 # Con cloudflared
 cloudflared tunnel --url http://tu-zima-ip:3001
+```
+
+#### **6.1 Integración con Traefik** 🆕
+Si ya tienes Traefik configurado en CasaOS:
+
+```yaml
+# docker-compose.traefik.yml
+version: '3.8'
+
+services:
+  pogocompi:
+    image: 4rgs/pogocompi:latest
+    container_name: pogocompi-app
+    restart: unless-stopped
+    environment:
+      - TZ=America/Mexico_City
+    networks:
+      - traefik
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.pogocompi.rule=Host(`pogocompi.tu-dominio.local`)"
+      - "traefik.http.routers.pogocompi.entrypoints=websecure"
+      - "traefik.http.routers.pogocompi.tls.certresolver=letsencrypt"
+      - "traefik.http.services.pogocompi.loadbalancer.server.port=8080"
+      - "traefik.docker.network=traefik"
+
+networks:
+  traefik:
+    external: true
+```
+
+**Para usar con Traefik:**
+```bash
+# Descargar configuración Traefik
+wget https://raw.githubusercontent.com/4rgs/PoGoCompi/develop/docker-compose.traefik.yml
+docker-compose -f docker-compose.traefik.yml up -d
 ```
 
 #### **7. Navegadores Compatibles**
