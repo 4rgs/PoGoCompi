@@ -165,7 +165,7 @@ function PokemonForm({ onAdd, onShowMessage }) {
           p: { xs: 3, sm: 4, md: 5 },
           textAlign: 'center',
           mx: 'auto',
-          maxWidth: { xs: '100%', sm: '600px' },
+          width: '100%',
           background: 'linear-gradient(145deg, rgba(30, 41, 59, 0.6), rgba(15, 23, 42, 0.8))',
           backdropFilter: 'blur(10px)',
           border: '1px solid rgba(59, 130, 246, 0.1)',
@@ -196,7 +196,7 @@ function PokemonForm({ onAdd, onShowMessage }) {
       sx={{
         p: { xs: 3, sm: 4, md: 5 },
         mx: 'auto',
-        maxWidth: { xs: '100%', sm: '600px' },
+        width: '100%',
         background: 'linear-gradient(145deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.9))',
         backdropFilter: 'blur(10px)',
         border: '1px solid rgba(59, 130, 246, 0.2)',
@@ -305,101 +305,103 @@ function PokemonForm({ onAdd, onShowMessage }) {
           </Typography>
         )}
 
-        {/* Level - Full Width */}
-        <TextField
-          name="level"
-          type="number"
-          label="Nivel"
-          value={form.level}
-          onChange={handleChange}
-          inputProps={{ min: 1, max: 50 }}
-          fullWidth
-          required
-          disabled={!dataReady}
-          InputProps={{
-            startAdornment: !dataReady ? (
-              <Box sx={{ display: 'flex', alignItems: 'center', pr: 2 }}>
-                <CircularProgress size={16} />
-              </Box>
-            ) : null
-          }}
-        />
-
-        {/* IV Attack - Full Width */}
-        <TextField
-          name="ivAttack"
-          type="number"
-          label="IV Ataque"
-          value={form.ivAttack}
-          onChange={handleChange}
-          inputProps={{ min: 0, max: 15 }}
-          fullWidth
-          required
-          disabled={!dataReady}
-          InputProps={{
-            startAdornment: !dataReady ? (
-              <Box sx={{ display: 'flex', alignItems: 'center', pr: 2 }}>
-                <CircularProgress size={16} />
-              </Box>
-            ) : null
-          }}
-        />
-
-        {/* Fast Move - Full Width */}
-        <FormControl fullWidth required disabled={!selected || !dataReady}>
-          <InputLabel>Ataque Rápido</InputLabel>
-          <Select
-            name="fastMove"
-            value={form.fastMove}
+        {/* Level y IV Attack en Grid - mejor aprovechamiento del ancho */}
+        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 3 }}>
+          <TextField
+            name="level"
+            type="number"
+            label="Nivel"
+            value={form.level}
             onChange={handleChange}
-            label="Ataque Rápido"
-            startAdornment={
-              !dataReady ? (
-                <Box sx={{ display: 'flex', alignItems: 'center', pl: 2 }}>
+            inputProps={{ min: 1, max: 50 }}
+            fullWidth
+            required
+            disabled={!dataReady}
+            InputProps={{
+              startAdornment: !dataReady ? (
+                <Box sx={{ display: 'flex', alignItems: 'center', pr: 2 }}>
                   <CircularProgress size={16} />
                 </Box>
               ) : null
-            }
-          >
-            {!dataReady ? (
-              <MenuItem value="">Cargando movimientos...</MenuItem>
-            ) : selected ? (
-              selected.fastMoves.map(m => (
-                <MenuItem key={m.name} value={m.name}>{m.name}</MenuItem>
-              ))
-            ) : (
-              <MenuItem value="">Selecciona un Pokémon primero</MenuItem>
-            )}
-          </Select>
-        </FormControl>
+            }}
+          />
 
-        {/* Charged Move - Full Width */}
-        <FormControl fullWidth required disabled={!selected || !dataReady}>
-          <InputLabel>Ataque Cargado</InputLabel>
-          <Select
-            name="chargedMove"
-            value={form.chargedMove}
+          <TextField
+            name="ivAttack"
+            type="number"
+            label="IV Ataque"
+            value={form.ivAttack}
             onChange={handleChange}
-            label="Ataque Cargado"
-            startAdornment={
-              !dataReady ? (
-                <Box sx={{ display: 'flex', alignItems: 'center', pl: 2 }}>
+            inputProps={{ min: 0, max: 15 }}
+            fullWidth
+            required
+            disabled={!dataReady}
+            InputProps={{
+              startAdornment: !dataReady ? (
+                <Box sx={{ display: 'flex', alignItems: 'center', pr: 2 }}>
                   <CircularProgress size={16} />
                 </Box>
               ) : null
-            }
-          >
-            {!dataReady ? (
-              <MenuItem value="">Cargando movimientos...</MenuItem>
-            ) : selected ? (
-              selected.chargedMoves.map(m => (
-                <MenuItem key={m.name} value={m.name}>{m.name}</MenuItem>
-              ))
-            ) : (
-              <MenuItem value="">Selecciona un Pokémon primero</MenuItem>
-            )}
-          </Select>
-        </FormControl>
+            }}
+          />
+        </Box>
+
+        {/* Movimientos en Grid - mejor aprovechamiento del ancho */}
+        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 3 }}>
+          <FormControl fullWidth required disabled={!selected || !dataReady}>
+            <InputLabel>Ataque Rápido</InputLabel>
+            <Select
+              name="fastMove"
+              value={form.fastMove}
+              onChange={handleChange}
+              label="Ataque Rápido"
+              startAdornment={
+                !dataReady ? (
+                  <Box sx={{ display: 'flex', alignItems: 'center', pl: 2 }}>
+                    <CircularProgress size={16} />
+                  </Box>
+                ) : null
+              }
+            >
+              {!dataReady ? (
+                <MenuItem value="">Cargando movimientos...</MenuItem>
+              ) : selected ? (
+                selected.fastMoves.map(m => (
+                  <MenuItem key={m.name} value={m.name}>{m.name}</MenuItem>
+                ))
+              ) : (
+                <MenuItem value="">Selecciona un Pokémon primero</MenuItem>
+              )}
+            </Select>
+          </FormControl>
+
+          <FormControl fullWidth required disabled={!selected || !dataReady}>
+            <InputLabel>Ataque Cargado</InputLabel>
+            <Select
+              name="chargedMove"
+              value={form.chargedMove}
+              onChange={handleChange}
+              label="Ataque Cargado"
+              startAdornment={
+                !dataReady ? (
+                  <Box sx={{ display: 'flex', alignItems: 'center', pl: 2 }}>
+                    <CircularProgress size={16} />
+                  </Box>
+                ) : null
+              }
+            >
+              {!dataReady ? (
+                <MenuItem value="">Cargando movimientos...</MenuItem>
+              ) : selected ? (
+                selected.chargedMoves.map(m => (
+                  <MenuItem key={m.name} value={m.name}>{m.name}</MenuItem>
+                ))
+              ) : (
+                <MenuItem value="">Selecciona un Pokémon primero</MenuItem>
+              )}
+            </Select>
+          </FormControl>
+        </Box>
 
         {/* Submit Button - Full Width */}
         <Box sx={{ display: 'flex', justifyContent: 'center', pt: 2 }}>
@@ -411,7 +413,6 @@ function PokemonForm({ onAdd, onShowMessage }) {
             disabled={!dataReady || !form.name || !form.fastMove || !form.chargedMove}
             sx={{
               width: '100%',
-              maxWidth: '400px',
               py: 1.5,
               px: 3,
               fontSize: '1.1rem',

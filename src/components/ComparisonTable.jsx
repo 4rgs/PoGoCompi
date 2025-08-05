@@ -28,8 +28,7 @@ function ComparisonTable({ pokemonList, onClear }) {
         sx={{
           p: { xs: 3, sm: 4, md: 5 },
           textAlign: 'center',
-          mx: 'auto',
-          maxWidth: { xs: '100%', sm: '600px' },
+          width: '100%',
           background: 'linear-gradient(145deg, rgba(30, 41, 59, 0.6), rgba(15, 23, 42, 0.8))',
           backdropFilter: 'blur(10px)',
           border: '1px solid rgba(59, 130, 246, 0.1)',

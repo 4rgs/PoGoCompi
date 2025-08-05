@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-import { CssBaseline, Snackbar, Alert, Grid, Container, Box } from '@mui/material';
+import { CssBaseline, Snackbar, Alert, Container, Box } from '@mui/material';
 import PokemonForm from './components/PokemonForm';
 import ComparisonTable from './components/ComparisonTable';
 import DPSChart from './components/DPSChart';
@@ -271,48 +271,79 @@ function App() {
         {/* Background gradients */}
         <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-transparent to-emerald-500/10 pointer-events-none"></div>
 
-        <Container maxWidth="xl" sx={{ position: 'relative', zIndex: 10, flex: 1, display: 'flex', flexDirection: 'column' }}>
+        <Container 
+          maxWidth={false}
+          sx={{ 
+            position: 'relative', 
+            zIndex: 10, 
+            flex: 1, 
+            display: 'flex', 
+            flexDirection: 'column',
+            width: '100%',
+            maxWidth: '1600px', // Límite máximo para pantallas muy grandes
+            mx: 'auto', // Centrar horizontalmente
+            px: { xs: 2, sm: 3, md: 4, lg: 6 } // Márgenes responsivos
+          }}
+        >
           {/* Header */}
-          <div className="text-center mb-8 md:mb-12 w-full">
+          <div className="text-center mb-6 md:mb-8 w-full">
             <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-4 sm:mb-6 bg-gradient-to-r from-blue-400 via-blue-500 to-emerald-400 bg-clip-text text-transparent filter drop-shadow-lg">
               ⚡ Comparador de Pokémon GO ⚡
             </h1>
-            <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-slate-300 max-w-3xl mx-auto leading-relaxed opacity-90 font-normal">
+            <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-slate-300 max-w-4xl mx-auto leading-relaxed opacity-90 font-normal">
               🎯 Analiza y compara el DPS de tus Pokémon favoritos con precisión profesional
             </p>
           </div>
 
           {/* API Version Status */}
-          <ApiVersionStatus />
+          <Box sx={{ mb: 2 }}>
+            <ApiVersionStatus />
+          </Box>
 
-          {/* Main Content - Flex Row Layout */}
-          <Grid container spacing={3} sx={{ flex: 1 }}>
-            {/* Top Row: Form + Table */}
-            <Grid item xs={12} sx={{ display: 'flex', flexDirection: { xs: 'column', lg: 'row' }, gap: 3 }}>
+          {/* Main Content - Flex Layout */}
+          <Box sx={{ 
+            flex: 1, 
+            width: '100%', 
+            display: 'flex', 
+            flexDirection: 'column', 
+            gap: { xs: 2, sm: 3, md: 4 } 
+          }}>
+            {/* Top Row: Form + Table - Flex Row */}
+            <Box sx={{ 
+              display: 'flex', 
+              flexDirection: { xs: 'column', lg: 'row' },
+              gap: { xs: 2, sm: 3, md: 4 },
+              width: '100%'
+            }}>
               {/* Form Card - Left side */}
-              <Box sx={{
-                flex: { xs: '1 1 100%', lg: '0 0 auto' },
-                minWidth: { lg: '400px' },
-                maxWidth: { lg: '500px' }
+              <Box sx={{ 
+                flex: { xs: '1 1 100%', lg: '0 0 400px' },
+                maxWidth: { xs: '100%', lg: '400px' },
+                minWidth: { lg: '350px' }
               }}>
                 <PokemonForm onAdd={handleAddPokemon} onShowMessage={showNotification} />
               </Box>
 
               {/* Table Card - Right side, takes remaining space */}
-              <Box sx={{ flex: '1 1 auto' }}>
+              <Box sx={{ 
+                flex: { xs: '1 1 100%', lg: '1 1 auto' },
+                minWidth: 0 // Permite que el contenido se contraiga
+              }}>
                 <ComparisonTable pokemonList={pokemonList} onClear={handleClearList} />
               </Box>
-            </Grid>
+            </Box>
 
             {/* Bottom Row: Chart - Full width */}
-            <Grid item xs={12}>
+            <Box sx={{ width: '100%' }}>
               <DPSChart pokemonList={pokemonList} />
-            </Grid>
-          </Grid>
+            </Box>
+          </Box>
         </Container>
 
         {/* Footer con información de versión */}
-        <AppFooter />
+        <Box sx={{ width: '100%', mt: 'auto', pt: 4 }}>
+          <AppFooter />
+        </Box>
       </div>
 
       {/* PWA Status - Botones de instalación y gestión de cache */}
