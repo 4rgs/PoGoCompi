@@ -12,8 +12,7 @@ import {
   Legend,
   LineElement,
   PointElement,
-  Title,
-  SubTitle
+  Title
 } from 'chart.js';
 
 // Registrar todos los elementos necesarios para gráficos mixtos
@@ -25,8 +24,7 @@ ChartJS.register(
   Legend,
   LineElement,
   PointElement,
-  Title,
-  SubTitle
+  Title
 );
 
 function DPSChart({ pokemonList }) {
