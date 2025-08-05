@@ -7,6 +7,7 @@ import DPSChart from './components/DPSChart';
 import PWAStatus from './components/PWAStatus';
 import PWAInstallPrompt from './components/PWAInstallPrompt';
 import AppFooter from './components/AppFooter';
+import ApiVersionStatus from './components/ApiVersionStatus';
 import pokemonDataService from './services/pokemonDataService';
 
 // Hacer el servicio disponible globalmente para debugging
@@ -280,6 +281,9 @@ function App() {
               🎯 Analiza y compara el DPS de tus Pokémon favoritos con precisión profesional
             </p>
           </div>
+
+          {/* API Version Status */}
+          <ApiVersionStatus />
 
           {/* Main Content - Flex Row Layout */}
           <Grid container spacing={3} sx={{ flex: 1 }}>
