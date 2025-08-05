@@ -286,20 +286,20 @@ function App() {
             {/* Top Row: Form + Table */}
             <Grid item xs={12} sx={{ display: 'flex', flexDirection: { xs: 'column', lg: 'row' }, gap: 3 }}>
               {/* Form Card - Left side */}
-              <Box sx={{ 
-                flex: { xs: '1 1 100%', lg: '0 0 auto' }, 
+              <Box sx={{
+                flex: { xs: '1 1 100%', lg: '0 0 auto' },
                 minWidth: { lg: '400px' },
                 maxWidth: { lg: '500px' }
               }}>
                 <PokemonForm onAdd={handleAddPokemon} onShowMessage={showNotification} />
               </Box>
-              
+
               {/* Table Card - Right side, takes remaining space */}
               <Box sx={{ flex: '1 1 auto' }}>
                 <ComparisonTable pokemonList={pokemonList} onClear={handleClearList} />
               </Box>
             </Grid>
-            
+
             {/* Bottom Row: Chart - Full width */}
             <Grid item xs={12}>
               <DPSChart pokemonList={pokemonList} />

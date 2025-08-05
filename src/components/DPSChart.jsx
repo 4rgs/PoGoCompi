@@ -6,6 +6,8 @@ import { getBlendedTypeColor, getTypeColorWithAlpha } from '../utils/typeColors'
 import {
   Chart as ChartJS,
   BarElement,
+  BarController,
+  LineController,
   CategoryScale,
   LinearScale,
   Tooltip,
@@ -18,6 +20,8 @@ import {
 // Registrar todos los elementos necesarios para gráficos mixtos
 ChartJS.register(
   BarElement,
+  BarController,
+  LineController,
   CategoryScale,
   LinearScale,
   Tooltip,
