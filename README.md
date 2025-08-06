@@ -1,15 +1,48 @@
 # ⚡ Comparador de Pokémon GO ⚡
 
-Una aplicación web moderna para analizar y comparar el DPS de tus Pokémon favoritos en Pokémon GO.
+Una aplicación web moderna para analizar y comparar el DPS de tus Pokémon favoritos con **fórmulas oficiales de Pokémon GO**.
 
-## 🎯 Características
+## 🎯 Características Principales
 
-- 📊 **Análisis de DPS** con datos en tiempo real
+### 📊 Sistema de Cálculo Avanzado
+- **Fórmulas oficiales de Pokémon GO** implementadas
+- **Multiplicadores precisos**: STAB, efectividad de tipos, clima, Shadow
+- **Análisis por ventanas de tiempo**: 10s, 30s, 60s
+- **Estadísticas reales** calculadas con CPM oficiales (nivel 1-50)
+- **CP oficial** según fórmula de Niantic
+
+### 🔍 Análisis Detallado
+- **Simulación de combate** con secuencias de movimientos
+- **Métricas avanzadas**: DPE, EPS, eficiencia energética
+- **Recomendaciones automáticas** para optimización
+- **Comparación de variantes** (Normal vs Shadow)
+
+### 💻 Experiencia de Usuario
 - 📱 **PWA completa** - instalable como app nativa
 - 🎨 **Interfaz moderna** con tema oscuro
 - 📈 **Gráficos interactivos** para visualizar comparaciones
 - 🔄 **Auto-actualización** con Watchtower
 - 💾 **Funcionamiento offline** una vez cacheado
+
+## 🧮 Fórmulas Implementadas
+
+### Daño por Movimiento
+```
+Daño = floor(0.5 × Power × (Attack/Defense) × Multiplicadores) + 1
+```
+
+### Estadísticas Reales
+```
+Estadística = (Base_Stat + IV) × CPM
+```
+
+### Multiplicadores
+- **STAB**: ×1.2 (mismo tipo)
+- **Súper eficaz**: ×1.6
+- **No muy eficaz**: ×0.625
+- **Shadow**: +20% ataque, -16.67% defensa
+- **Clima**: +20% daño
+- **Mega**: +30% daño
 
 ## 🚀 Instalación Rápida
 

@@ -332,7 +332,7 @@ function SearchableSelect({
                               <Box sx={{ display: 'flex', gap: 0.5, flexShrink: 0 }}>
                                 {types.slice(0, 2).map((type, typeIndex) => (
                                   <Chip
-                                    key={typeIndex}
+                                    key={`${option[idProperty] || option[displayProperty]}-${type}-${typeIndex}`}
                                     label={type}
                                     size="small"
                                     sx={{
@@ -351,6 +351,7 @@ function SearchableSelect({
                         }
                         primaryTypographyProps={{
                           variant: 'body2',
+                          component: 'div', // Cambiar de 'p' a 'div' para evitar nesting issues
                           sx: {
                             fontWeight: isSelected ? 600 : 400,
                             color: isSelected ? 'primary.main' : 'text.primary'

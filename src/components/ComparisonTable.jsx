@@ -18,8 +18,13 @@ import MoveBadge from './MoveBadge';
 import PokemonImage from './PokemonImage';
 
 function ComparisonTable({ pokemonList, onClear }) {
-  // Ordenar por DPS de mayor a menor
-  const sortedPokemonList = [...pokemonList].sort((a, b) => b.dps - a.dps);
+  // Ordenar por DPS de 60 segundos (long) de mayor a menor como principal
+  const sortedPokemonList = [...pokemonList].sort((a, b) => {
+    // Usar DPS de 60 segundos si está disponible, sino usar DPS simple
+    const aDps = typeof a.dps === 'object' ? a.dps.long : a.dps;
+    const bDps = typeof b.dps === 'object' ? b.dps.long : b.dps;
+    return bDps - aDps;
+  });
 
   if (pokemonList.length === 0) {
     return (
@@ -227,11 +232,11 @@ function ComparisonTable({ pokemonList, onClear }) {
                     DPS Multi-Ventana
                   </Box>
                   <Box display="flex" gap={0.5} sx={{ fontSize: '0.7rem', opacity: 0.8 }}>
-                    <span>10s</span>
+                    <span style={{ fontWeight: 'bold' }}>60s</span>
                     <span>•</span>
                     <span>30s</span>
                     <span>•</span>
-                    <span>60s</span>
+                    <span>10s</span>
                   </Box>
                 </Box>
               </TableCell>
@@ -393,16 +398,16 @@ function ComparisonTable({ pokemonList, onClear }) {
                 </TableCell>
                 <TableCell align="center" sx={{ px: { xs: 1, sm: 2 } }}>
                   <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0.5 }}>
-                    {/* DPS para múltiples ventanas de tiempo */}
+                    {/* DPS para múltiples ventanas de tiempo - 60s como principal */}
                     <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap', justifyContent: 'center' }}>
                       <Chip
-                        label={`${typeof p.dps === 'object' ? p.dps.short : p.dps}`}
+                        label={`${typeof p.dps === 'object' ? p.dps.long : p.dps}`}
                         variant="filled"
                         size="small"
                         sx={{
                           fontWeight: 'bold',
                           fontSize: '0.65rem',
-                          backgroundColor: '#ef4444',
+                          backgroundColor: '#10b981',
                           color: 'white',
                           minWidth: '45px'
                         }}
@@ -422,13 +427,13 @@ function ComparisonTable({ pokemonList, onClear }) {
                             }}
                           />
                           <Chip
-                            label={p.dps.long}
+                            label={p.dps.short}
                             variant="filled"
                             size="small"
                             sx={{
                               fontWeight: 'bold',
                               fontSize: '0.65rem',
-                              backgroundColor: '#10b981',
+                              backgroundColor: '#ef4444',
                               color: 'white',
                               minWidth: '45px'
                             }}
@@ -436,13 +441,13 @@ function ComparisonTable({ pokemonList, onClear }) {
                         </>
                       )}
                     </Box>
-                    {/* Labels para las ventanas */}
+                    {/* Labels para las ventanas - ahora en orden 60s, 30s, 10s */}
                     <Box sx={{ display: 'flex', gap: 0.5, fontSize: '0.6rem', opacity: 0.8, color: 'white' }}>
-                      <span>10s</span>
+                      <span>60s</span>
                       {typeof p.dps === 'object' && (
                         <>
                           <span>30s</span>
-                          <span>60s</span>
+                          <span>10s</span>
                         </>
                       )}
                     </Box>
@@ -476,7 +481,7 @@ function ComparisonTable({ pokemonList, onClear }) {
                   ) : (
                     <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0.5 }}>
                       <Typography variant="caption" sx={{ fontSize: '0.65rem' }}>
-                        🗡️ DPS: {typeof p.dps === 'object' ? p.dps.short : p.dps}
+                        🗡️ DPS: {typeof p.dps === 'object' ? p.dps.long : p.dps}
                       </Typography>
                       <Typography variant="caption" sx={{ fontSize: '0.65rem' }}>
                         ⚔️ ATK: {p.attack}

@@ -16,7 +16,7 @@ import { Add as AddIcon, CatchingPokemon as PokemonIcon, Refresh as RefreshIcon 
 import pokemonDataService from '../services/pokemonDataService';
 import SearchableSelect from './SearchableSelect';
 
-function PokemonForm({ onAdd, onShowMessage }) {
+function PokemonForm({ onAdd, onShowMessage, onPokemonSelect, onFormDataChange }) {
   const [pokemonData, setPokemonData] = useState([]);
   const [loading, setLoading] = useState(true); // Cambiar a true por defecto
   const [dataReady, setDataReady] = useState(false); // Nuevo estado para indicar cuando los datos están listos
@@ -25,6 +25,8 @@ function PokemonForm({ onAdd, onShowMessage }) {
     name: '',
     level: 50,
     ivAttack: 15,
+    ivDefense: 15,
+    ivStamina: 15,
     fastMove: '',
     chargedMove: ''
   });
@@ -127,28 +129,55 @@ function PokemonForm({ onAdd, onShowMessage }) {
 
     // Si cambia el Pokémon, resetear los movimientos
     if (name === 'name') {
-      setForm(prev => ({
-        ...prev,
+      const newForm = {
+        ...form,
         [name]: value, // Asegurar que nunca sea undefined
         fastMove: '',
         chargedMove: ''
-      }));
+      };
+      setForm(newForm);
+
+      // Notificar al componente padre sobre el Pokemon seleccionado
+      const selectedPokemon = pokemonData.find(p => p.name === value);
+      if (onPokemonSelect) {
+        onPokemonSelect(selectedPokemon);
+      }
+
+      // Notificar cambios del form
+      if (onFormDataChange) {
+        onFormDataChange(newForm);
+      }
     } else {
-      setForm(prev => ({
-        ...prev,
+      const newForm = {
+        ...form,
         [name]: value // Asegurar que nunca sea undefined
-      }));
+      };
+      setForm(newForm);
+
+      // Notificar cambios del form para level e IVs
+      if (onFormDataChange && (name === 'level' || name === 'ivAttack' || name === 'ivDefense' || name === 'ivStamina')) {
+        console.log('PokemonForm enviando:', newForm);
+        onFormDataChange(newForm);
+      }
     }
   };
 
   const handleSubmit = e => {
     e.preventDefault();
-    onAdd({ ...form, level: parseFloat(form.level), ivAttack: parseInt(form.ivAttack) });
+    onAdd({
+      ...form,
+      level: parseFloat(form.level),
+      ivAttack: parseInt(form.ivAttack),
+      ivDefense: parseInt(form.ivDefense),
+      ivStamina: parseInt(form.ivStamina)
+    });
     // Resetear el formulario después de agregar
     setForm({
       name: '',
-      level: 30,
+      level: 50,
       ivAttack: 15,
+      ivDefense: 15,
+      ivStamina: 15,
       fastMove: '',
       chargedMove: ''
     });
@@ -225,7 +254,7 @@ function PokemonForm({ onAdd, onShowMessage }) {
             textAlign: 'center'
           }}
         >
-          🎯 Agregar Pokémon v2.0
+          🎯 Agregar Pokémon
         </Typography>
         <Button
           variant="outlined"
@@ -284,6 +313,7 @@ function PokemonForm({ onAdd, onShowMessage }) {
           showAvatar={true}
           avatarProperty="imageUrl"
           typesProperty="types"
+          idProperty="name" // Usar name como ID único ya que es lo que usamos para la selección
           required={true}
           maxHeight={280}
           maxDisplayItems={50}
@@ -305,8 +335,11 @@ function PokemonForm({ onAdd, onShowMessage }) {
           </Typography>
         )}
 
-        {/* Level y IV Attack en Grid - mejor aprovechamiento del ancho */}
-        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 3 }}>
+        {/* Stats Card - Mostrar cuando hay un Pokémon seleccionado */}
+        {/* Movido fuera del formulario al componente padre */}
+
+        {/* Level y IVs en Grid - 4 columnas en desktop, 2 en tablet, 1 en móvil */}
+        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr', md: '1fr 1fr 1fr 1fr' }, gap: 3 }}>
           <TextField
             name="level"
             type="number"
@@ -331,6 +364,44 @@ function PokemonForm({ onAdd, onShowMessage }) {
             type="number"
             label="IV Ataque"
             value={form.ivAttack}
+            onChange={handleChange}
+            inputProps={{ min: 0, max: 15 }}
+            fullWidth
+            required
+            disabled={!dataReady}
+            InputProps={{
+              startAdornment: !dataReady ? (
+                <Box sx={{ display: 'flex', alignItems: 'center', pr: 2 }}>
+                  <CircularProgress size={16} />
+                </Box>
+              ) : null
+            }}
+          />
+
+          <TextField
+            name="ivDefense"
+            type="number"
+            label="IV Defensa"
+            value={form.ivDefense}
+            onChange={handleChange}
+            inputProps={{ min: 0, max: 15 }}
+            fullWidth
+            required
+            disabled={!dataReady}
+            InputProps={{
+              startAdornment: !dataReady ? (
+                <Box sx={{ display: 'flex', alignItems: 'center', pr: 2 }}>
+                  <CircularProgress size={16} />
+                </Box>
+              ) : null
+            }}
+          />
+
+          <TextField
+            name="ivStamina"
+            type="number"
+            label="IV Stamina"
+            value={form.ivStamina}
             onChange={handleChange}
             inputProps={{ min: 0, max: 15 }}
             fullWidth

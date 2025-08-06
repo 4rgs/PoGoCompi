@@ -2,8 +2,10 @@ import { useState, useEffect } from 'react';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { CssBaseline, Snackbar, Alert, Container, Box } from '@mui/material';
 import PokemonForm from './components/PokemonForm';
+import PokemonStatsCard from './components/PokemonStatsCard';
 import ComparisonTable from './components/ComparisonTable';
 import DPSChart from './components/DPSChart';
+import DPSAnalysisCard from './components/DPSAnalysisCard';
 import PWAStatus from './components/PWAStatus';
 import PWAInstallPrompt from './components/PWAInstallPrompt';
 import AppFooter from './components/AppFooter';
@@ -167,6 +169,13 @@ function App() {
   const [pokemonList, setPokemonList] = useState([]);
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
   const [appLoading, setAppLoading] = useState(true);
+  const [selectedPokemon, setSelectedPokemon] = useState(null);
+  const [formData, setFormData] = useState({
+    level: 50,
+    ivAttack: 15,
+    ivDefense: 15,
+    ivStamina: 15
+  });
 
   const showNotification = (message, severity = 'success') => {
     setSnackbar({ open: true, message, severity });
@@ -206,6 +215,8 @@ function App() {
         fastMoveName: pokemon.fastMove,
         chargedMoveName: pokemon.chargedMove,
         ivAttack: pokemon.ivAttack,
+        ivDefense: pokemon.ivDefense,
+        ivStamina: pokemon.ivStamina,
         level: pokemon.level
       });
 
@@ -216,8 +227,12 @@ function App() {
       setPokemonList(prev => [...prev, {
         ...pokemon,
         uniqueName,
-        baseAttack: dpsResult.pokemon.isShadow ? Math.round(dpsResult.attack / (dpsResult.pokemon.shadowBonus?.attack || 1.2)) : dpsResult.attack,
-        attack: dpsResult.attack,
+        baseAttack: dpsResult.pokemon.baseAttack,
+        baseDefense: dpsResult.pokemon.baseDefense,
+        baseStamina: dpsResult.pokemon.baseStamina,
+        attack: dpsResult.stats.attack, // Usar el ataque calculado de las estadísticas
+        defense: dpsResult.stats.defense,
+        stamina: dpsResult.stats.stamina,
         // DPS para múltiples ventanas de tiempo
         dps: dpsResult.dps, // Mantiene compatibilidad con la estructura existente
         dpsMultiple: {
@@ -271,13 +286,13 @@ function App() {
         {/* Background gradients */}
         <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-transparent to-emerald-500/10 pointer-events-none"></div>
 
-        <Container 
+        <Container
           maxWidth={false}
-          sx={{ 
-            position: 'relative', 
-            zIndex: 10, 
-            flex: 1, 
-            display: 'flex', 
+          sx={{
+            position: 'relative',
+            zIndex: 10,
+            flex: 1,
+            display: 'flex',
             flexDirection: 'column',
             width: '100%',
             maxWidth: '1600px', // Límite máximo para pantallas muy grandes
@@ -301,42 +316,73 @@ function App() {
           </Box>
 
           {/* Main Content - Flex Layout */}
-          <Box sx={{ 
-            flex: 1, 
-            width: '100%', 
-            display: 'flex', 
-            flexDirection: 'column', 
-            gap: { xs: 2, sm: 3, md: 4 } 
+          <Box sx={{
+            flex: 1,
+            width: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: { xs: 2, sm: 3, md: 4 }
           }}>
-            {/* Top Row: Form + Table - Flex Row */}
-            <Box sx={{ 
-              display: 'flex', 
+            {/* Top Row: Form + Stats Card - Flex Row */}
+            <Box sx={{
+              display: 'flex',
               flexDirection: { xs: 'column', lg: 'row' },
               gap: { xs: 2, sm: 3, md: 4 },
               width: '100%'
             }}>
               {/* Form Card - Left side */}
-              <Box sx={{ 
+              <Box sx={{
                 flex: { xs: '1 1 100%', lg: '0 0 400px' },
                 maxWidth: { xs: '100%', lg: '400px' },
                 minWidth: { lg: '350px' }
               }}>
-                <PokemonForm onAdd={handleAddPokemon} onShowMessage={showNotification} />
+                <PokemonForm
+                  onAdd={handleAddPokemon}
+                  onShowMessage={showNotification}
+                  onPokemonSelect={setSelectedPokemon}
+                  onFormDataChange={setFormData}
+                />
               </Box>
 
-              {/* Table Card - Right side, takes remaining space */}
-              <Box sx={{ 
+              {/* Stats Card - Right side */}
+              <Box sx={{
                 flex: { xs: '1 1 100%', lg: '1 1 auto' },
                 minWidth: 0 // Permite que el contenido se contraiga
               }}>
-                <ComparisonTable pokemonList={pokemonList} onClear={handleClearList} />
+                {selectedPokemon && (
+                  <PokemonStatsCard
+                    pokemon={selectedPokemon}
+                    level={parseFloat(formData.level) || 50}
+                    ivAttack={parseInt(formData.ivAttack) || 15}
+                    ivDefense={parseInt(formData.ivDefense) || 15}
+                    ivStamina={parseInt(formData.ivStamina) || 15}
+                  />
+                )}
               </Box>
             </Box>
 
-            {/* Bottom Row: Chart - Full width */}
+            {/* Second Row: Comparison Table - Full width */}
+            <Box sx={{ width: '100%' }}>
+              <ComparisonTable pokemonList={pokemonList} onClear={handleClearList} />
+            </Box>
+
+            {/* Third Row: Chart - Full width */}
             <Box sx={{ width: '100%' }}>
               <DPSChart pokemonList={pokemonList} />
             </Box>
+
+            {/* DPS Analysis Cards - Show detailed analysis for each Pokémon */}
+            {pokemonList.length > 0 && (
+              <Box sx={{ width: '100%', mt: 2 }}>
+                {pokemonList.map((pokemon, index) => (
+                  <DPSAnalysisCard
+                    key={`${pokemon.name}-${pokemon.fastMove}-${pokemon.chargedMove}-${index}`}
+                    pokemonData={pokemon}
+                    isExpanded={index === 0} // Expandir solo el primero por defecto
+                  />
+                ))}
+              </Box>
+            )}
           </Box>
         </Container>
 
